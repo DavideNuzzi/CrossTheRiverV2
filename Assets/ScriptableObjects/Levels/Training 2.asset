@@ -1,0 +1,98 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc302359d50591a4f85ae9a485b7d3dc, type: 3}
+  m_Name: Training 2
+  m_EditorClassIdentifier: 
+  sceneName: Training 2
+  shortDescription: 
+  isTraining: 1
+  isSlippery: 0
+  isTall: 0
+  platformInfo:
+  - scale: 1.1000001
+    position: {x: -0.183288, y: -20.183289}
+    isSlippery: 0
+  - scale: 1.1
+    position: {x: -3.0842335, y: -17.756733}
+    isSlippery: 0
+  - scale: 1.0999999
+    position: {x: -2.826986, y: -13.599487}
+    isSlippery: 0
+  - scale: 1.1000001
+    position: {x: -0.21850453, y: -12.418505}
+    isSlippery: 0
+  - scale: 1.1
+    position: {x: 0.38150567, y: -7.9184957}
+    isSlippery: 0
+  - scale: 1.1
+    position: {x: 3.0257664, y: -6.701734}
+    isSlippery: 0
+  - scale: 1.1
+    position: {x: 3.4383316, y: -2.3891678}
+    isSlippery: 0
+  - scale: 1.1
+    position: {x: -0.26417893, y: -0.7641795}
+    isSlippery: 0
+  - scale: 1.1
+    position: {x: -3.576652, y: 1.2508461}
+    isSlippery: 0
+  - scale: 1.0999999
+    position: {x: -3.39634, y: 5.3311586}
+    isSlippery: 0
+  - scale: 1.1000001
+    position: {x: -0.2337802, y: 7.0662193}
+    isSlippery: 0
+  - scale: 1.1
+    position: {x: 0.4665596, y: 11.666558}
+    isSlippery: 0
+  - scale: 1.1
+    position: {x: -3.164026, y: 13.363472}
+    isSlippery: 0
+  - scale: 1.1000001
+    position: {x: -3.3688867, y: 17.058613}
+    isSlippery: 0
+  - scale: 1.0999999
+    position: {x: 0.35926688, y: 19.359266}
+    isSlippery: 0
+  - scale: 0.70000005
+    position: {x: -3.5549276, y: -10.427429}
+    isSlippery: 0
+  - scale: 0.70000005
+    position: {x: -0.3237625, y: -4.723763}
+    isSlippery: 0
+  - scale: 0.70000005
+    position: {x: -3.0790753, y: 9.548424}
+    isSlippery: 0
+  - scale: 0.70000005
+    position: {x: -0.45152438, y: 14.648475}
+    isSlippery: 0
+  - scale: 0.6999999
+    position: {x: 0.4237898, y: 3.8237891}
+    isSlippery: 0
+  - scale: 0.7
+    position: {x: -3.3444052, y: -2.416907}
+    isSlippery: 0
+  - scale: 0.6999999
+    position: {x: 3.5525928, y: 17.22509}
+    isSlippery: 0
+  - scale: 0.7
+    position: {x: -3.6529567, y: -6.6254582}
+    isSlippery: 0
+  - scale: 0.7
+    position: {x: 3.6996777, y: 1.7721777}
+    isSlippery: 0
+  - scale: 0.70000005
+    position: {x: 3.066313, y: -10.561185}
+    isSlippery: 0
+  - scale: 0.7
+    position: {x: -0.08691721, y: -16.186918}
+    isSlippery: 0

@@ -1,0 +1,122 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc302359d50591a4f85ae9a485b7d3dc, type: 3}
+  m_Name: Level6
+  m_EditorClassIdentifier: 
+  sceneName: Level6
+  shortDescription: 
+  isTraining: 0
+  isSlippery: 0
+  isTall: 0
+  platformInfo:
+  - scale: 1.1
+    position: {x: -0.22621828, y: -20.22622}
+    isSlippery: 0
+  - scale: 1.1
+    position: {x: 3.6721678, y: -17.755331}
+    isSlippery: 0
+  - scale: 1.1000001
+    position: {x: 3.2035034, y: -14.323995}
+    isSlippery: 0
+  - scale: 1.1
+    position: {x: 6.6995654, y: -12.255432}
+    isSlippery: 0
+  - scale: 1.1
+    position: {x: 6.71844, y: -8.336558}
+    isSlippery: 0
+  - scale: 1.0999999
+    position: {x: 3.3270082, y: -6.400491}
+    isSlippery: 0
+  - scale: 1.1
+    position: {x: -0.08945046, y: -4.489451}
+    isSlippery: 0
+  - scale: 1.1
+    position: {x: -3.8696475, y: -2.9421494}
+    isSlippery: 0
+  - scale: 1.1
+    position: {x: -6.509524, y: -0.2545271}
+    isSlippery: 0
+  - scale: 1.1
+    position: {x: -6.5174694, y: 3.6375268}
+    isSlippery: 0
+  - scale: 1.1
+    position: {x: -3.2918706, y: 5.4356275}
+    isSlippery: 0
+  - scale: 1.1
+    position: {x: -0.06392966, y: 7.236069}
+    isSlippery: 0
+  - scale: 1.1000001
+    position: {x: 3.4255977, y: 9.298099}
+    isSlippery: 0
+  - scale: 1.1
+    position: {x: 3.8029509, y: 13.575452}
+    isSlippery: 0
+  - scale: 1.1
+    position: {x: 0.2042227, y: 15.304221}
+    isSlippery: 0
+  - scale: 1.1
+    position: {x: 0.12433247, y: 19.12433}
+    isSlippery: 0
+  - scale: 0.6999999
+    position: {x: -7.112284, y: 6.9427123}
+    isSlippery: 0
+  - scale: 0.7
+    position: {x: -3.6626463, y: 1.1648517}
+    isSlippery: 0
+  - scale: 0.7
+    position: {x: 0.15282787, y: -0.34717283}
+    isSlippery: 0
+  - scale: 0.7
+    position: {x: 6.794511, y: -16.060488}
+    isSlippery: 0
+  - scale: 0.70000005
+    position: {x: 0.17016345, y: 11.370162}
+    isSlippery: 0
+  - scale: 0.7
+    position: {x: 3.5016422, y: 5.4741426}
+    isSlippery: 0
+  - scale: 0.70000005
+    position: {x: 3.2274106, y: -2.6000888}
+    isSlippery: 0
+  - scale: 0.7
+    position: {x: 3.113603, y: -10.513896}
+    isSlippery: 0
+  - scale: 0.7
+    position: {x: 0.3331873, y: -15.766812}
+    isSlippery: 0
+  - scale: 0.7
+    position: {x: -3.358745, y: -14.131247}
+    isSlippery: 0
+  - scale: 0.7
+    position: {x: 0.12661964, y: 3.526619}
+    isSlippery: 0
+  - scale: 0.6999999
+    position: {x: -7.0820704, y: 10.872926}
+    isSlippery: 0
+  - scale: 0.70000005
+    position: {x: 6.9459023, y: -0.30909595}
+    isSlippery: 0
+  - scale: 0.7
+    position: {x: -3.7294233, y: -10.601925}
+    isSlippery: 0
+  - scale: 0.6999999
+    position: {x: -6.938578, y: -12.383582}
+    isSlippery: 0
+  - scale: 0.7
+    position: {x: 3.2085154, y: 16.881014}
+    isSlippery: 0
+  - scale: 0.7
+    position: {x: -7.1383457, y: 14.716651}
+    isSlippery: 0
+  - scale: 0.70000005
+    position: {x: -3.317521, y: 17.109978}
+    isSlippery: 0
