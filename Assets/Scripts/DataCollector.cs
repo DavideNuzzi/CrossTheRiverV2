@@ -12,7 +12,7 @@ public class DataCollector : MonoBehaviour
     public List<DataPoint> data;
     public List<SimplifiedDataPoint> simplifiedData;
 
-    bool isCollecting = true;
+    public bool isCollecting = true;
     public float time;
     int frame = 0;
 
@@ -80,10 +80,18 @@ public class DataCollector : MonoBehaviour
     {
         Gizmos.color = Color.red;
 
-        for (int i = 0; i < data.Count-1; i++)
+        for (int i = 0; i < data.Count-4; i+= 3)
         {
-            Gizmos.DrawLine(data[i].position, data[i + 1].position);
+            Gizmos.DrawLine(data[i].position, data[i + 3].position);
         }
+        
+        Gizmos.color = Color.blue;
+
+        for (int i = 0; i < data.Count - 1; i++)
+        {
+            if ((data[i].direction - data[i+1].direction).magnitude > 0.01) Gizmos.DrawLine(data[i].position, data[i].position + data[i].direction);
+        }
+
 
 
         for (int i = 0; i < simplifiedData.Count; i++)
@@ -91,6 +99,7 @@ public class DataCollector : MonoBehaviour
             if (simplifiedData[i].type == 0) Gizmos.color = Color.yellow;
             if (simplifiedData[i].type == 1) Gizmos.color = Color.blue;
             if (simplifiedData[i].type == 2) Gizmos.color = Color.red;
+            if (simplifiedData[i].type == 3) Gizmos.color = Color.magenta;
 
             Gizmos.DrawSphere(simplifiedData[i].position, 0.2f);
         }

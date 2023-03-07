@@ -116,6 +116,9 @@ namespace StarterAssets
 
         public bool blocked = false;
 
+        public bool isRagdoll = false;
+        public Rigidbody[] bones;
+
         private bool IsCurrentDeviceMouse
         {
             get
@@ -426,5 +429,6 @@ namespace StarterAssets
                // LevelManager.Instance.playerReachedGoal = true;
             }
         }
+
     }
 }

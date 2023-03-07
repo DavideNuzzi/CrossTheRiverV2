@@ -14,6 +14,8 @@ public class WaterCollision : MonoBehaviour
         if (other.tag == "RiverWater")
         {
             GameObject.Instantiate(waterSplash, new Vector3(transform.position.x, 0.01f, transform.position.z), waterSplash.transform.rotation);
+            if (GameManager.Instance.resettingLevel == false) dataCollector.AddSimplifiedPoint(transform.position, 2);
+
             GameManager.Instance.ResetLevel();
           //  LevelManager.Instance.playerFellWater = true;
             GameObject audio = new GameObject();
@@ -21,7 +23,6 @@ public class WaterCollision : MonoBehaviour
             audioSource.clip = waterSplashSound;
             audioSource.Play();
 
-            dataCollector.AddSimplifiedPoint(transform.position, 2);
         }
     }
 

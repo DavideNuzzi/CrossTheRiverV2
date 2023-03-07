@@ -50,6 +50,7 @@ MonoBehaviour:
     scale: 0
     position: {x: 0, y: 0}
     isSlippery: 0
+  mapManager: {fileID: 0}
 --- !u!65 &5898864894686910487
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -133,6 +134,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: ab32fd025cc7a1245b48e85bbb29d3db, type: 3}
       propertyPath: m_Name
       value: PlatformRock_Unlit_1
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: ab32fd025cc7a1245b48e85bbb29d3db, type: 3}
+      propertyPath: m_Layer
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: ab32fd025cc7a1245b48e85bbb29d3db, type: 3}
       propertyPath: m_StaticEditorFlags

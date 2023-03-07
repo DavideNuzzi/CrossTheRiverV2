@@ -35,11 +35,12 @@ public class GameManager : MonoBehaviour
 
     private Vector3 startingPlayerPosition;
     private bool isTrainingLevel;
-    private bool resettingLevel;
+    public bool resettingLevel;
     private float score = 0;
 
-    private bool levelRunning = false;
+    public bool levelRunning = false;
     string currentLevelName = "";
+    int penaltyNum = 0;
 
     private PlayerInfo playerInfo;
 
@@ -151,6 +152,7 @@ public class GameManager : MonoBehaviour
         levelNameUI.text = level.name;
 
         timer = 60;
+        penaltyNum = 0;
         UpdateUI();
         if (isTrainingLevel) timerUI.gameObject.SetActive(false);
 
@@ -186,6 +188,7 @@ public class GameManager : MonoBehaviour
         Debug.Log("Livello iniziato");
         levelRunning = true;
         playerInput.enabled = true;
+        dataCollector.AddSimplifiedPoint(characterController.transform.position, 0);
 
         startingTextUI.gameObject.SetActive(false);
 
@@ -203,9 +206,11 @@ public class GameManager : MonoBehaviour
     }
     public IEnumerator ResetLevelRoutine()
     {
+        dataCollector.isCollecting = false;
         levelRunning = false;
         playerInput.enabled = false;
         characterAnimator.SetBool("Lost", true);
+        penaltyNum++;
 
         yield return new WaitForSeconds(2f);
 
@@ -218,6 +223,16 @@ public class GameManager : MonoBehaviour
         float t = 0;
         Vector3 p1 = characterController.transform.position;
         Vector3 p2 = startingPlayerPosition;
+
+        // Se esiste una piattaforma precedente vado lì
+        for (int i = dataCollector.simplifiedData.Count-1; i > 0; i--)
+        {
+            if (dataCollector.simplifiedData[i].type == 0)
+            {
+                p2 = dataCollector.simplifiedData[i].position;
+                break;
+            }
+        }
         float dist = (p2 - p1).magnitude;
         float interpTime = dist/15f;
 
@@ -240,6 +255,8 @@ public class GameManager : MonoBehaviour
         characterController.enabled = true;
         characterAnimator.SetBool("Lost", false);
         characterAnimator.SetBool("Flying", false);
+        dataCollector.isCollecting = true;
+
 
     }
 
@@ -255,6 +272,8 @@ public class GameManager : MonoBehaviour
             {
                 timer = 0;
                 // Qui devo chiamare la routine finale
+                if (levelRunning) StartCoroutine(LosingSequence());
+
                 break;
             }
         }
@@ -276,11 +295,13 @@ public class GameManager : MonoBehaviour
         characterAnimator.SetBool("Won", true);
         confettiParticles.SetActive(true);
 
+        StopCoroutine(GameTimer());
+
         // Salvo sul server
         SaveLevelData();
 
         // Piccola animazione
-        yield return new WaitForSeconds(3);
+        yield return new WaitForSeconds(2);
 
         // Sposto il punteggio al centro
         StartCoroutine(AddBlur());
@@ -325,6 +346,64 @@ public class GameManager : MonoBehaviour
         NextScene();
 
     }
+
+
+    public IEnumerator LosingSequence()
+    {
+        // Tolgo il controllo al giocatore
+        playerInput.enabled = false;
+        characterAnimator.SetBool("Lost", true);
+
+        // Salvo sul server
+        SaveLevelData();
+
+        // Piccola animazione
+        yield return new WaitForSeconds(2);
+
+        // Sposto il punteggio al centro
+        StartCoroutine(AddBlur());
+        winTextUI.rectTransform.anchoredPosition = new Vector2(Screen.width, 0);
+        winTextUI.text = "Time run out! Starting next level";
+        winTextUI.gameObject.SetActive(true);
+
+        yield return StartCoroutine(MoveUI(winTextUI.rectTransform, new Vector2(0, 0)));
+
+        if (!isTrainingLevel)
+        {
+            // Aumento il punteggio
+            float t = 0f;
+            float T = 2f;
+
+            float s1 = score;
+            float s2 = score + timer;
+            float time1 = timer;
+
+            while (t <= T)
+            {
+                float fac = t / T;
+
+                float s = (1 - fac) * s1 + fac * s2;
+                float time = (1 - fac) * time1;
+
+                score = s;
+                timer = time;
+
+                UpdateUI();
+                t += Time.deltaTime;
+                yield return null;
+            }
+            timer = 0;
+            score = s2;
+            UpdateUI();
+        }
+
+        yield return new WaitForSeconds(2);
+
+
+        NextScene();
+
+    }
+
 
     public void UpdateUI()
     {

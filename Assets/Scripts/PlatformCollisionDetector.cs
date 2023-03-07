@@ -8,16 +8,24 @@ public class PlatformCollisionDetector : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.tag == "Platform")
+        if (dataCollector != null)
         {
-            if (!dataCollector.CheckSamePoint(other.transform.position))
-                dataCollector.AddSimplifiedPoint(other.transform.position,0);
+            if (other.tag == "Platform")
+            {
+                if (!dataCollector.CheckSamePoint(other.transform.position))
+                {
+                    Debug.Log("Collisione con piattaforma");
+                    dataCollector.AddSimplifiedPoint(other.transform.position, 0);
+                }
 
-        }
-        if (other.tag == "GoalPlatform")
-        {
-            if (!dataCollector.CheckSamePoint(other.transform.position))
-                dataCollector.AddSimplifiedPoint(other.transform.position, 1);
+
+
+            }
+            if (other.tag == "GoalPlatform")
+            {
+                if (!dataCollector.CheckSamePoint(other.transform.position))
+                    dataCollector.AddSimplifiedPoint(other.transform.position, 1);
+            }
         }
     }
 }

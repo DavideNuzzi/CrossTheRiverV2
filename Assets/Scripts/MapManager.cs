@@ -16,6 +16,8 @@ public class MapManager : MonoBehaviour
     public Transform terrainLeft;
     public Transform terrainRight;
 
+    public GameObject obstaclePrefab;
+
     public float treeDistanceStep = 5.0f;
     public float treeJitter = 0.5f;
     public float treeDensity = 0.8f;
@@ -61,7 +63,7 @@ public class MapManager : MonoBehaviour
         CreateMap();
     }
 
-    void UpdateMapInfoFromEditor()
+    public void UpdateMapInfoFromEditor()
     {
         platformInfo = new List<PlatformInfo>();
 
@@ -74,7 +76,7 @@ public class MapManager : MonoBehaviour
                 {
                     scale = platform.transform.localScale.x,
                     position = new Vector2(platform.transform.position.x, platform.transform.position.z),
-                    isSlippery = false
+                    isSlippery = platform.GetComponent<Platform>().info.isSlippery
                 };
 
                 platformInfo.Add(info);
@@ -109,6 +111,15 @@ public class MapManager : MonoBehaviour
             platform.info = info;
             platform.ApplyPositionAndScale();
             platform.transform.parent = platformsContainer.transform;
+            platform.mapManager = this;
+
+            if (info.isSlippery == true)
+            {
+                GameObject obstacle = GameObject.Instantiate(obstaclePrefab, platform.info.position, Quaternion.identity);
+                obstacle.transform.parent = platform.transform;
+                obstacle.transform.localPosition = new Vector3(0, 0.15f, 0);
+            }
+
             platforms.Add(platformObj);
         }
     }

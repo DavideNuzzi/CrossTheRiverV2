@@ -326,6 +326,7 @@ MonoBehaviour:
     scale: 1
     position: {x: -1.189966, y: 2.1511931}
     isSlippery: 0
+  mapManager: {fileID: 0}
 --- !u!4 &8797993
 Transform:
   m_ObjectHideFlags: 0
@@ -6193,6 +6194,7 @@ MonoBehaviour:
   platformStart: {fileID: 0}
   terrainLeft: {fileID: 0}
   terrainRight: {fileID: 0}
+  obstaclePrefab: {fileID: 0}
   treeDistanceStep: 8
   treeJitter: 1.6
   treeDensity: 0.8
@@ -7515,6 +7517,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 44617a02c7985c248aaa1e53cfac0729, type: 2}
   - {fileID: 11400000, guid: 5de3f927644a08245a544f92133f70be, type: 2}
   - {fileID: 11400000, guid: 4de4bfffc525b8b4bae86a78b2a288c0, type: 2}
+  resettingLevel: 0
+  levelRunning: 0
   dataCollector: {fileID: 0}
 --- !u!4 &273247669
 Transform:
@@ -9832,6 +9836,7 @@ MonoBehaviour:
     scale: 1
     position: {x: -3.8969948, y: 6.6159415}
     isSlippery: 0
+  mapManager: {fileID: 0}
 --- !u!4 &346949761
 Transform:
   m_ObjectHideFlags: 0
@@ -13380,6 +13385,7 @@ MonoBehaviour:
     scale: 1
     position: {x: -1.7370018, y: 12.810817}
     isSlippery: 0
+  mapManager: {fileID: 0}
 --- !u!4 &449702420
 Transform:
   m_ObjectHideFlags: 0
@@ -18024,6 +18030,7 @@ MonoBehaviour:
     scale: 1
     position: {x: -6.027585, y: -8.139692}
     isSlippery: 0
+  mapManager: {fileID: 0}
 --- !u!4 &637929498
 Transform:
   m_ObjectHideFlags: 0
@@ -19062,6 +19069,7 @@ MonoBehaviour:
     scale: 1
     position: {x: 2.1939678, y: -6.2924166}
     isSlippery: 0
+  mapManager: {fileID: 0}
 --- !u!4 &679622887
 Transform:
   m_ObjectHideFlags: 0
@@ -20929,6 +20937,7 @@ MonoBehaviour:
     scale: 1
     position: {x: 2.1845841, y: 13.281639}
     isSlippery: 0
+  mapManager: {fileID: 0}
 --- !u!4 &748452474
 Transform:
   m_ObjectHideFlags: 0
@@ -23045,6 +23054,7 @@ MonoBehaviour:
     scale: 1
     position: {x: 6.68517, y: 0.06526834}
     isSlippery: 0
+  mapManager: {fileID: 0}
 --- !u!4 &851864722
 Transform:
   m_ObjectHideFlags: 0
@@ -25352,6 +25362,7 @@ MonoBehaviour:
     scale: 1
     position: {x: -5.234464, y: -13.873057}
     isSlippery: 0
+  mapManager: {fileID: 0}
 --- !u!4 &949047832
 Transform:
   m_ObjectHideFlags: 0
@@ -27629,6 +27640,7 @@ MonoBehaviour:
     scale: 1
     position: {x: 4.7993217, y: -3.2975247}
     isSlippery: 0
+  mapManager: {fileID: 0}
 --- !u!4 &1018323998
 Transform:
   m_ObjectHideFlags: 0
@@ -28506,6 +28518,7 @@ MonoBehaviour:
     scale: 1
     position: {x: 0.9580129, y: -3.0244076}
     isSlippery: 0
+  mapManager: {fileID: 0}
 --- !u!4 &1053594642
 Transform:
   m_ObjectHideFlags: 0
@@ -32961,6 +32974,7 @@ MonoBehaviour:
     scale: 1
     position: {x: 2.777612, y: 1.5011034}
     isSlippery: 0
+  mapManager: {fileID: 0}
 --- !u!4 &1198693634
 Transform:
   m_ObjectHideFlags: 0
@@ -34897,6 +34911,7 @@ MonoBehaviour:
     scale: 1
     position: {x: 6.7099614, y: 6.709637}
     isSlippery: 0
+  mapManager: {fileID: 0}
 --- !u!4 &1256596296
 Transform:
   m_ObjectHideFlags: 0
@@ -36675,6 +36690,7 @@ MonoBehaviour:
     scale: 1
     position: {x: 5.1432137, y: -10.16334}
     isSlippery: 0
+  mapManager: {fileID: 0}
 --- !u!4 &1329421016
 Transform:
   m_ObjectHideFlags: 0
@@ -38754,6 +38770,7 @@ MonoBehaviour:
     scale: 1
     position: {x: -1.0781944, y: -14.802733}
     isSlippery: 0
+  mapManager: {fileID: 0}
 --- !u!4 &1400146544
 Transform:
   m_ObjectHideFlags: 0
@@ -39574,6 +39591,7 @@ MonoBehaviour:
     scale: 1
     position: {x: -2.8126497, y: -11.102039}
     isSlippery: 0
+  mapManager: {fileID: 0}
 --- !u!4 &1420654044
 Transform:
   m_ObjectHideFlags: 0
@@ -42645,6 +42663,7 @@ MonoBehaviour:
     scale: 1
     position: {x: -5.312788, y: 1.4839233}
     isSlippery: 0
+  mapManager: {fileID: 0}
 --- !u!4 &1521130282
 Transform:
   m_ObjectHideFlags: 0
@@ -44330,6 +44349,7 @@ MonoBehaviour:
     scale: 1
     position: {x: 5.676207, y: 12.638666}
     isSlippery: 0
+  mapManager: {fileID: 0}
 --- !u!4 &1593092556
 Transform:
   m_ObjectHideFlags: 0
@@ -47896,6 +47916,7 @@ MonoBehaviour:
     scale: 1
     position: {x: -3.689151, y: 15.911023}
     isSlippery: 0
+  mapManager: {fileID: 0}
 --- !u!4 &1712046298
 Transform:
   m_ObjectHideFlags: 0
@@ -49770,6 +49791,7 @@ MonoBehaviour:
     scale: 1
     position: {x: -4.3195777, y: -5.3552523}
     isSlippery: 0
+  mapManager: {fileID: 0}
 --- !u!4 &1801529715
 Transform:
   m_ObjectHideFlags: 0
@@ -50268,6 +50290,7 @@ MonoBehaviour:
     scale: 1
     position: {x: 0.5546874, y: 16.227306}
     isSlippery: 0
+  mapManager: {fileID: 0}
 --- !u!4 &1828335453
 Transform:
   m_ObjectHideFlags: 0
@@ -51170,6 +51193,7 @@ MonoBehaviour:
     scale: 1
     position: {x: -2.4500735, y: -2.640036}
     isSlippery: 0
+  mapManager: {fileID: 0}
 --- !u!4 &1868700780
 Transform:
   m_ObjectHideFlags: 0
@@ -54001,6 +54025,7 @@ MonoBehaviour:
     scale: 1
     position: {x: 5.565076, y: 3.5413337}
     isSlippery: 0
+  mapManager: {fileID: 0}
 --- !u!4 &1984515694
 Transform:
   m_ObjectHideFlags: 0
@@ -54339,6 +54364,7 @@ MonoBehaviour:
     scale: 1
     position: {x: 1.266072, y: -10.137056}
     isSlippery: 0
+  mapManager: {fileID: 0}
 --- !u!4 &1998658510
 Transform:
   m_ObjectHideFlags: 0
@@ -54795,6 +54821,7 @@ MonoBehaviour:
     scale: 1
     position: {x: -1.1558945, y: 9.162056}
     isSlippery: 0
+  mapManager: {fileID: 0}
 --- !u!4 &2012254263
 Transform:
   m_ObjectHideFlags: 0
@@ -55436,6 +55463,7 @@ MonoBehaviour:
     scale: 1
     position: {x: -7.3357606, y: 4.5953884}
     isSlippery: 0
+  mapManager: {fileID: 0}
 --- !u!4 &2041644699
 Transform:
   m_ObjectHideFlags: 0
@@ -55675,6 +55703,7 @@ MonoBehaviour:
     scale: 1
     position: {x: 1.5360156, y: 4.7652326}
     isSlippery: 0
+  mapManager: {fileID: 0}
 --- !u!4 &2050032263
 Transform:
   m_ObjectHideFlags: 0
@@ -55935,6 +55964,7 @@ MonoBehaviour:
     scale: 1
     position: {x: 7.4605346, y: -12.474526}
     isSlippery: 0
+  mapManager: {fileID: 0}
 --- !u!4 &2055919974
 Transform:
   m_ObjectHideFlags: 0
@@ -56111,6 +56141,7 @@ MonoBehaviour:
     scale: 1
     position: {x: -1.6527262, y: -7.782736}
     isSlippery: 0
+  mapManager: {fileID: 0}
 --- !u!4 &2060138350
 Transform:
   m_ObjectHideFlags: 0
@@ -57209,6 +57240,7 @@ MonoBehaviour:
     scale: 1
     position: {x: -7.7860656, y: -1.6897336}
     isSlippery: 0
+  mapManager: {fileID: 0}
 --- !u!4 &2087267659
 Transform:
   m_ObjectHideFlags: 0
@@ -57905,6 +57937,7 @@ MonoBehaviour:
     scale: 1
     position: {x: 6.5231533, y: -6.41283}
     isSlippery: 0
+  mapManager: {fileID: 0}
 --- !u!4 &2108743313
 Transform:
   m_ObjectHideFlags: 0
@@ -59228,6 +59261,7 @@ MonoBehaviour:
     scale: 1
     position: {x: 2.8384283, y: 8.143712}
     isSlippery: 0
+  mapManager: {fileID: 0}
 --- !u!4 &2140235138
 Transform:
   m_ObjectHideFlags: 0
@@ -59353,6 +59387,7 @@ MonoBehaviour:
     scale: 1
     position: {x: -5.0602784, y: 10.266441}
     isSlippery: 0
+  mapManager: {fileID: 0}
 --- !u!4 &2141619509
 Transform:
   m_ObjectHideFlags: 0

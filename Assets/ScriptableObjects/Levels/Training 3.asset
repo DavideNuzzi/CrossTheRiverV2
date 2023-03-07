@@ -14,118 +14,118 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sceneName: Training 3
   shortDescription: 
-  isTraining: 1
+  isTraining: 0
   isSlippery: 0
   isTall: 0
   platformInfo:
-  - scale: 1.1
-    position: {x: 0, y: -20}
+  - scale: 1.1000001
+    position: {x: -0.33398944, y: -20.33399}
     isSlippery: 0
-  - scale: 1.0999999
-    position: {x: -3.3774989, y: -18.05}
-    isSlippery: 0
-  - scale: 1.1
-    position: {x: -3.3774989, y: -14.15}
-    isSlippery: 0
-  - scale: 1.1
-    position: {x: 0, y: -12.2}
-    isSlippery: 0
-  - scale: 1.1
-    position: {x: 3.3774989, y: -10.25}
-    isSlippery: 0
-  - scale: 1.1
-    position: {x: 6.7549977, y: -8.3}
+  - scale: 1.1000003
+    position: {x: -2.7980165, y: -17.47052}
     isSlippery: 0
   - scale: 1.1000001
-    position: {x: 6.7549977, y: -4.4000006}
+    position: {x: -3.3485255, y: -14.121026}
     isSlippery: 0
   - scale: 1.1000001
-    position: {x: 3.3774989, y: -2.4500008}
+    position: {x: 0.25475168, y: -11.945249}
     isSlippery: 0
-  - scale: 1.1
-    position: {x: 0, y: -0.50000083}
+  - scale: 1.1000001
+    position: {x: 3.2666223, y: -10.360875}
     isSlippery: 0
   - scale: 1.0999999
-    position: {x: 0, y: 3.3999991}
+    position: {x: 6.759451, y: -8.295547}
+    isSlippery: 0
+  - scale: 1.1000004
+    position: {x: 6.900302, y: -4.2546964}
+    isSlippery: 0
+  - scale: 1.1000005
+    position: {x: 2.9541857, y: -2.8733141}
+    isSlippery: 0
+  - scale: 1.1000001
+    position: {x: 0.38331768, y: -0.116683155}
+    isSlippery: 0
+  - scale: 1.0999999
+    position: {x: -0.16170028, y: 3.2382987}
     isSlippery: 0
   - scale: 1.1
-    position: {x: -3.3774989, y: 5.349999}
+    position: {x: -3.40746, y: 5.320038}
+    isSlippery: 0
+  - scale: 1.0999999
+    position: {x: -6.231239, y: 7.8237576}
     isSlippery: 0
   - scale: 1.1
-    position: {x: -6.7549977, y: 7.2999988}
+    position: {x: -10.742344, y: 8.640152}
     isSlippery: 0
   - scale: 1.1
-    position: {x: -10.132497, y: 9.249999}
+    position: {x: -9.939759, y: 13.342736}
     isSlippery: 0
-  - scale: 1.1
-    position: {x: -10.132497, y: 13.149999}
+  - scale: 1.1000001
+    position: {x: -13.258568, y: 15.351426}
     isSlippery: 0
-  - scale: 1.1
-    position: {x: -13.509995, y: 15.099998}
-    isSlippery: 0
-  - scale: 1.1
-    position: {x: -13.509995, y: 18.999998}
-    isSlippery: 0
-  - scale: 0.7
-    position: {x: 3.3774989, y: -6.3500004}
-    isSlippery: 0
-  - scale: 0.7
-    position: {x: -6.754998, y: 11.199999}
-    isSlippery: 0
-  - scale: 0.7
-    position: {x: -3.3774989, y: -10.25}
-    isSlippery: 0
-  - scale: 0.7
-    position: {x: -3.3774989, y: 1.4499991}
-    isSlippery: 0
-  - scale: 0.70000005
-    position: {x: 3.3774989, y: 1.4499991}
-    isSlippery: 0
-  - scale: 0.70000005
-    position: {x: 6.7549977, y: -0.5000007}
-    isSlippery: 0
-  - scale: 0.70000005
-    position: {x: -6.754998, y: 15.099998}
-    isSlippery: 0
-  - scale: 0.7
-    position: {x: -6.7549977, y: -16.099998}
+  - scale: 1.1000003
+    position: {x: -13.899257, y: 19.59074}
     isSlippery: 0
   - scale: 0.7000001
-    position: {x: 6.7549977, y: 3.3999991}
-    isSlippery: 0
+    position: {x: 3.3207335, y: -6.4067655}
+    isSlippery: 1
   - scale: 0.7
-    position: {x: -6.754998, y: 18.999998}
-    isSlippery: 0
-  - scale: 0.7
-    position: {x: -3.3774993, y: 13.149999}
+    position: {x: -7.1956525, y: 10.759344}
     isSlippery: 0
   - scale: 0.70000005
-    position: {x: -3.3774993, y: 17.05}
+    position: {x: -3.6395192, y: -10.512021}
+    isSlippery: 0
+  - scale: 0.7
+    position: {x: -3.6119246, y: 1.2155732}
+    isSlippery: 0
+  - scale: 0.7000001
+    position: {x: 2.9787316, y: 1.0512317}
     isSlippery: 0
   - scale: 0.70000005
-    position: {x: 10.132497, y: -2.4500008}
+    position: {x: 7.25725, y: 0.0022520423}
     isSlippery: 0
   - scale: 0.70000005
-    position: {x: -10.132497, y: 17.05}
+    position: {x: -6.536602, y: 15.318395}
     isSlippery: 0
-  - scale: 0.7
-    position: {x: -6.7549977, y: -12.2}
-    isSlippery: 0
-  - scale: 0.7
-    position: {x: 10.132497, y: -6.3500004}
-    isSlippery: 0
-  - scale: 0.7
-    position: {x: -6.7549977, y: -8.3}
-    isSlippery: 0
-  - scale: 0.7
-    position: {x: 10.132497, y: 1.4499991}
+  - scale: 0.7000001
+    position: {x: -6.6810217, y: -16.026022}
     isSlippery: 0
   - scale: 0.70000005
-    position: {x: -6.7549977, y: -4.4000006}
+    position: {x: 7.036195, y: 3.681196}
+    isSlippery: 0
+  - scale: 0.6999999
+    position: {x: -6.4977036, y: 19.257294}
+    isSlippery: 0
+  - scale: 0.70000017
+    position: {x: -3.5986557, y: 12.928842}
+    isSlippery: 0
+  - scale: 0.7000003
+    position: {x: -3.2005806, y: 17.226917}
+    isSlippery: 0
+  - scale: 0.7000001
+    position: {x: 10.197027, y: -2.3854694}
+    isSlippery: 0
+  - scale: 0.7000001
+    position: {x: -9.932467, y: 17.250029}
+    isSlippery: 0
+  - scale: 0.7000001
+    position: {x: -6.937594, y: -12.382597}
+    isSlippery: 0
+  - scale: 0.7000001
+    position: {x: 9.699459, y: -6.783038}
+    isSlippery: 0
+  - scale: 0.6999998
+    position: {x: -6.4002104, y: -7.9452133}
+    isSlippery: 0
+  - scale: 0.6999999
+    position: {x: 9.9384985, y: 1.2560003}
+    isSlippery: 0
+  - scale: 0.70000035
+    position: {x: -6.245719, y: -3.890721}
     isSlippery: 0
   - scale: 0.70000005
-    position: {x: -3.3774989, y: -2.4500008}
+    position: {x: -3.387881, y: -2.4603827}
     isSlippery: 0
-  - scale: 0.7
-    position: {x: 0, y: 7.299999}
+  - scale: 0.6999999
+    position: {x: 0.10397141, y: 7.4039707}
     isSlippery: 0

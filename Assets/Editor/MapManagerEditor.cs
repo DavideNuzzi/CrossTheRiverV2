@@ -27,6 +27,14 @@ public class MapManagerEditor : Editor
         EditorGUILayout.LabelField("Map loading and saving", titleStyle);
         EditorGUILayout.Space(15f);
 
+
+        if (GUILayout.Button("Update Map"))
+        {
+            mapManager.UpdateMapInfoFromEditor();
+            mapManager.ResetMap();
+            mapManager.CreateMap();
+        }
+
         EditorGUILayout.LabelField("Level to load (ScriptableObject)");
         mapManager.levelToLoad = (Level)EditorGUILayout.ObjectField(mapManager.levelToLoad, typeof(Level), true);
 
