@@ -8,6 +8,7 @@ TagManager:
   - GoalPlatform
   - RiverWater
   - Platform
+  - Decorations
   layers:
   - Default
   - TransparentFX

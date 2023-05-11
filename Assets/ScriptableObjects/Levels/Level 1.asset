@@ -17,6 +17,7 @@ MonoBehaviour:
   isTraining: 0
   isSlippery: 0
   isTall: 0
+  maxTime: 10
   platformInfo:
   - scale: 1.1
     position: {x: 0.18435073, y: -24.815647}

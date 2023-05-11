@@ -11,7 +11,7 @@ public class CounterFPS : MonoBehaviour
     float accum = 0.0f;
     int frames = 0;
     float timeleft;
-    float fps;
+    public float fps;
 
     GUIStyle textStyle = new GUIStyle();
 
@@ -41,10 +41,11 @@ public class CounterFPS : MonoBehaviour
             frames = 0;
         }
     }
-
+/*
     void OnGUI()
     {
         //Display the fps and round to 2 decimals
         GUI.Label(new Rect(5, 5, 100, 25), fps.ToString("F2") + "FPS", textStyle);
     }
+*/
 }

@@ -8,6 +8,7 @@ public class Level : GameScene
     public bool isTraining;
     public bool isSlippery;
     public bool isTall;
+    public float maxTime;
     public List<PlatformInfo> platformInfo;
 
 }

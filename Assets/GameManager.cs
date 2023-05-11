@@ -17,6 +17,7 @@ public class GameManager : MonoBehaviour
 
     public List<GameScene> gameScenes;
     private int currentScene = -1;
+    private int currentLevelInBlock = 0;
     private float timer;
 
     private MapManager mapManager;
@@ -25,13 +26,17 @@ public class GameManager : MonoBehaviour
     private PostProcessVolume postProcessVolume;
     private GameObject confettiParticles;
 
+    public GameObject coinSound;
+    public GameObject penaltySound;
+
     private TMP_Text timerUI;
     private TMP_Text startingTextUI;
     private TMP_Text scoreUI;
+    private TMP_Text penaltiesUI;
     private TMP_Text winTextUI;
     private TMP_Text levelNameUI;
 
-    private Animator characterAnimator;
+    public Animator characterAnimator;
 
     private Vector3 startingPlayerPosition;
     private bool isTrainingLevel;
@@ -63,6 +68,9 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
+       // Application.targetFrameRate = 30;
+
+
         // Voglio che il game-manager rimanga in ogni livello
         DontDestroyOnLoad(this.gameObject);
 
@@ -72,7 +80,22 @@ public class GameManager : MonoBehaviour
 
     public void NextScene()
     {
-        // Vedo quale sarà la prossima scena
+        // Se la scena attuale è il livello di un blocco, devo passare al livello successivo
+        if (currentScene >= 0)
+        {
+            if (gameScenes[currentScene].GetType() == typeof(Block))
+            {
+                currentLevelInBlock++;
+
+                Block block = (Block)gameScenes[currentScene];
+                Level level = block.levels[currentLevelInBlock];
+
+                StartCoroutine(LoadLevelScene(level));
+                return;
+            }
+        }
+        
+        // Altrimenti passo alla scena successiva
         currentScene++;
         GameScene scene = gameScenes[currentScene];
 
@@ -88,12 +111,25 @@ public class GameManager : MonoBehaviour
             Level level = (Level)scene;
 
             StartCoroutine(LoadLevelScene(level));
-
         }
+        else if (scene.GetType() == typeof(Block))
+        {
+            currentLevelInBlock = 0;
+            Block block = (Block)gameScenes[currentScene];
+            Level level = block.levels[currentLevelInBlock];
+            StartCoroutine(LoadLevelScene(level));
+        }
+
+
+       
     }
 
     public IEnumerator LoadTutorialScene(TutorialMenu tutorial)
     {
+        // QUI DEVO BLOCCARE IL VECCHIO PULSANTE DEL TUTORIAL!!!!!
+
+
+
         AsyncOperation asyncLoading = SceneManager.LoadSceneAsync("TutorialScene", LoadSceneMode.Single);
         Debug.Log("Inizio a caricare la scena del tutorial");
 
@@ -139,6 +175,7 @@ public class GameManager : MonoBehaviour
         startingTextUI = GameObject.Find("ClickAnywhere").GetComponent<TMP_Text>();
         timerUI = GameObject.Find("Timer").GetComponent<TMP_Text>();
         scoreUI = GameObject.Find("Score").GetComponent<TMP_Text>();
+        penaltiesUI = GameObject.Find("Penalty").GetComponent<TMP_Text>();
         winTextUI = GameObject.Find("WinText").GetComponent<TMP_Text>();
         levelNameUI = GameObject.Find("LevelName").GetComponent<TMP_Text>();
 
@@ -151,10 +188,18 @@ public class GameManager : MonoBehaviour
         winTextUI.gameObject.SetActive(false);
         levelNameUI.text = level.name;
 
-        timer = 60;
+        timer = level.maxTime;
+        if (level.maxTime == 0) timer = 60;
+
         penaltyNum = 0;
+        if (isTrainingLevel)
+        {
+            timerUI.gameObject.SetActive(false);
+            penaltiesUI.gameObject.SetActive(false);
+            scoreUI.gameObject.SetActive(false);
+        }
         UpdateUI();
-        if (isTrainingLevel) timerUI.gameObject.SetActive(false);
+
 
         // Blocco il personaggio
         playerInput.enabled = false;
@@ -210,7 +255,8 @@ public class GameManager : MonoBehaviour
         levelRunning = false;
         playerInput.enabled = false;
         characterAnimator.SetBool("Lost", true);
-        penaltyNum++;
+        if (!isTrainingLevel) penaltyNum++;
+        UpdateUI();
 
         yield return new WaitForSeconds(2f);
 
@@ -222,27 +268,25 @@ public class GameManager : MonoBehaviour
         // Sposto il personaggio
         float t = 0;
         Vector3 p1 = characterController.transform.position;
-        Vector3 p2 = startingPlayerPosition;
+        Vector3 p2 = startingPlayerPosition + new Vector3(0,0.5f,0);
 
         // Se esiste una piattaforma precedente vado lì
         for (int i = dataCollector.simplifiedData.Count-1; i > 0; i--)
         {
             if (dataCollector.simplifiedData[i].type == 0)
             {
-                p2 = dataCollector.simplifiedData[i].position;
+                p2 = dataCollector.simplifiedData[i].position + new Vector3(0, 0.5f, 0);
                 break;
             }
         }
         float dist = (p2 - p1).magnitude;
-        float interpTime = dist/15f;
+        float interpTime = dist/9f;
 
         while (t < interpTime)
         {
             float x = p2.x * t / interpTime + p1.x * (1 - t / interpTime);
             float z = p2.z * t / interpTime + p1.z * (1 - t / interpTime);
             float y = p1.y + (p2.y - p1.y) * t / interpTime + 0.5f * 9.81f * t * (interpTime - t);
-        //    if (t < interpTime/2f)  y = 5f * t / interpTime * 2f + p1.y * (1f - t / interpTime * 2f);
-        //    else                    y = p2.y * (2f * t / interpTime - 1f) + 2f * 5f * (1 - t/interpTime);
 
             characterController.transform.position = new Vector3(x, y, z);
             t += Time.deltaTime;
@@ -272,7 +316,10 @@ public class GameManager : MonoBehaviour
             {
                 timer = 0;
                 // Qui devo chiamare la routine finale
-                if (levelRunning) StartCoroutine(LosingSequence());
+                if (levelRunning)
+                {
+                    StartCoroutine(LosingSequence());
+                }
 
                 break;
             }
@@ -285,6 +332,68 @@ public class GameManager : MonoBehaviour
         {
             levelRunning = false;
             StartCoroutine(WinningSequence());
+        }
+    }
+
+    public IEnumerator CalculateScore()
+    {
+        if (!isTrainingLevel)
+        {
+            // Aumento il punteggio
+            float t = 0f;
+            float T = 2f;
+
+            float s1 = score;
+            float s2 = score + timer;
+            float time1 = timer;
+
+            float coinSoundTimer = 0;
+
+            while (t <= T)
+            {
+                float fac = t / T;
+
+                float s = (1 - fac) * s1 + fac * s2;
+                float time = (1 - fac) * time1;
+
+                score = s;
+                timer = time;
+
+
+                UpdateUI();
+                coinSoundTimer += Time.deltaTime;
+                if (coinSoundTimer > 0.3f)
+                {
+                    Instantiate(coinSound);
+                    coinSoundTimer = 0f;
+                }
+
+                t += Time.deltaTime;
+                yield return null;
+            }
+            timer = 0;
+            score = s2;
+            UpdateUI();
+        }
+
+        yield return new WaitForSeconds(1f);
+
+    }
+
+    public IEnumerator CalculatePenalties()
+    {
+
+        // Ora le penalità vengono sottratte 
+        int penalties = penaltyNum;
+        for (int i = 0; i < penalties; i++)
+        {
+            penaltyNum--;
+            score -= 5;
+            Instantiate(penaltySound);
+            if (score <= 0) score = 0;
+            UpdateUI();
+
+            yield return new WaitForSeconds(0.5f);
         }
     }
 
@@ -305,43 +414,14 @@ public class GameManager : MonoBehaviour
 
         // Sposto il punteggio al centro
         StartCoroutine(AddBlur());
-        //  yield return StartCoroutine(MoveScoreUI(new Vector2(-Screen.width/2f + 100f, -Screen.height/2f)));
         winTextUI.rectTransform.anchoredPosition = new Vector2(Screen.width,0);
         winTextUI.gameObject.SetActive(true);
         yield return StartCoroutine(MoveUI(winTextUI.rectTransform, new Vector2(0, 0)));
-        // yield return StartCoroutine(MoveUI(scoreUI.rectTransform, new Vector2(-Screen.width / 2f + 100f, -Screen.height / 2f)));
 
-        if (!isTrainingLevel)
-        {
-            // Aumento il punteggio
-            float t = 0f;
-            float T = 2f;
-
-            float s1 = score;
-            float s2 = score + timer;
-            float time1 = timer;
-
-            while (t <= T)
-            {
-                float fac = t / T;
-
-                float s = (1 - fac) * s1 + fac * s2;
-                float time = (1 - fac) * time1;
-
-                score = s;
-                timer = time;
-
-                UpdateUI();
-                t += Time.deltaTime;
-                yield return null;
-            }
-            timer = 0;
-            score = s2;
-            UpdateUI();
-        }
+        yield return StartCoroutine(CalculateScore());
+        yield return StartCoroutine(CalculatePenalties());
 
         yield return new WaitForSeconds(2);
-
 
         NextScene();
 
@@ -350,6 +430,8 @@ public class GameManager : MonoBehaviour
 
     public IEnumerator LosingSequence()
     {
+        levelRunning = false;
+
         // Tolgo il controllo al giocatore
         playerInput.enabled = false;
         characterAnimator.SetBool("Lost", true);
@@ -368,35 +450,7 @@ public class GameManager : MonoBehaviour
 
         yield return StartCoroutine(MoveUI(winTextUI.rectTransform, new Vector2(0, 0)));
 
-        if (!isTrainingLevel)
-        {
-            // Aumento il punteggio
-            float t = 0f;
-            float T = 2f;
-
-            float s1 = score;
-            float s2 = score + timer;
-            float time1 = timer;
-
-            while (t <= T)
-            {
-                float fac = t / T;
-
-                float s = (1 - fac) * s1 + fac * s2;
-                float time = (1 - fac) * time1;
-
-                score = s;
-                timer = time;
-
-                UpdateUI();
-                t += Time.deltaTime;
-                yield return null;
-            }
-            timer = 0;
-            score = s2;
-            UpdateUI();
-        }
-
+        yield return StartCoroutine(CalculatePenalties());
         yield return new WaitForSeconds(2);
 
 
@@ -409,6 +463,7 @@ public class GameManager : MonoBehaviour
     {
         timerUI.text = "Time left: " + timer.ToString("F1") + "s";
         scoreUI.text = "Score: " + score.ToString("F1");
+        penaltiesUI.text = "Penalties: " + penaltyNum;
     }
 
     public IEnumerator MoveScoreUI(Vector2 pos)
@@ -579,12 +634,6 @@ public class GameManager : MonoBehaviour
     {
         if (dataCollector) dataCollector.time = timer;
         
-
-        if (Input.GetKeyDown(KeyCode.N) && Input.GetKeyDown(KeyCode.Space))
-        {
-            StopAllCoroutines();
-            NextScene();
-        }
     }
     /*
     private IEnumerator StartGameCoroutine()

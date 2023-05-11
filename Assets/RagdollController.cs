@@ -82,18 +82,21 @@ public class RagdollController : MonoBehaviour
 
     }
 
+
+
     public void StopRagdoll()
     {
-        isRagdoll = false;
-        cameraRoot.transform.localPosition = cameraRootDelta;
-        characterController.transform.position = bones[0].transform.position;
+        StartCoroutine(StopRagdollRoutine());
+        
+    }
 
-        // Attivo i rigidbody di tutte le ossa
-        characterController.enabled = true;
-        input.enabled = true;
-        animator.enabled = true;
-        thirdPersonController.enabled = true;
+    public IEnumerator StopRagdollRoutine()
+    {
+        // Resetto il camera root e la posizione del personaggio
+        characterController.transform.position = new Vector3(bones[0].transform.position.x, -1f, bones[0].transform.position.z);
+        ResetCameraRoot();
 
+        // Disattivo i rigidbody delle ossa e faccio tornare l'animator
         for (int i = 0; i < bones.Length; i++)
         {
             Rigidbody boneRigid = bones[i];
@@ -107,8 +110,37 @@ public class RagdollController : MonoBehaviour
             }
         }
 
+        animator.enabled = true;
+
+        // Eseguo l'animazione che si rialza e aspetto
+        GameManager.Instance.characterAnimator.Play("GetUp");
+
+        float t = 0;
+        Vector3 p1 = characterController.transform.position;
+        Vector3 p2 = p1 + new Vector3(0f, 0.5f, 0f);
+
+        while(t < 2f)
+        {
+            characterController.transform.position = Vector3.Lerp(p1, p2, t / 2f);
+            t += Time.deltaTime;
+            yield return null;
+        }
+        yield return new WaitForSeconds(0.5f);
+
+        isRagdoll = false;
+
+        // Ora riattivo i controlli e dico che non è più ragdoll
+      
+        characterController.enabled = true;
+        input.enabled = true;
+        thirdPersonController.enabled = true;
+    
         if (waterCollider) waterCollider.enabled = true;
         if (platformCollider) platformCollider.enabled = true;
+    }
+    public void ResetCameraRoot()
+    {
+        cameraRoot.transform.localPosition = cameraRootDelta;
     }
 
     public void Explode(Vector3 position)

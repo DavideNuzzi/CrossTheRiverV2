@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sceneName: Training 3
   shortDescription: 
-  isTraining: 0
+  isTraining: 1
   isSlippery: 0
   isTall: 0
   platformInfo:

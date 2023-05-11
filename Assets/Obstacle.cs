@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.Animations;
 using UnityEngine;
 
 public class Obstacle : MonoBehaviour
@@ -14,7 +13,8 @@ public class Obstacle : MonoBehaviour
     void Awake()
     {
         ragdollController = GameObject.Find("PlayerArmature").GetComponent<RagdollController>();
-        dataCollector = GameObject.Find("DataCollector").GetComponent<DataCollector>();
+        GameObject dC = GameObject.Find("DataCollector");
+        if (dC != null) dataCollector = dC.GetComponent<DataCollector>();
 
         animator = GetComponent<Animator>();
         player = GameObject.Find("PlayerArmature").transform; 
@@ -31,9 +31,13 @@ public class Obstacle : MonoBehaviour
         if (other.name == "ObstacleCollisionDetector")
         {
             animator.SetBool("Attack", true);
-            dataCollector.AddSimplifiedPoint(transform.position, 3);
 
-            StartCoroutine(PlayerDied());
+            if (ragdollController.isRagdoll == false)
+            {
+                StartCoroutine(PlayerDied());
+                if (dataCollector != null) dataCollector.AddSimplifiedPoint(transform.position, 3);
+
+            }
         }
     }
 
