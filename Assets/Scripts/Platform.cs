@@ -32,7 +32,7 @@ public class Platform : MonoBehaviour
 }
 
 [System.Serializable]
-public struct PlatformInfo
+public class PlatformInfo
 {
     public float scale;
     public Vector2 position;

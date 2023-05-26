@@ -18,8 +18,6 @@ public class PlatformCollisionDetector : MonoBehaviour
                     dataCollector.AddSimplifiedPoint(other.transform.position, 0);
                 }
 
-
-
             }
             if (other.tag == "GoalPlatform")
             {

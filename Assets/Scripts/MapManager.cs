@@ -34,6 +34,8 @@ public class MapManager : MonoBehaviour
     [HideInInspector]
     public List<PlatformInfo> platformInfo = new List<PlatformInfo>();
 
+    public List<PlatformInfo> shortestPath;
+
 
     [HideInInspector]
     public Level levelToLoad;
@@ -45,22 +47,206 @@ public class MapManager : MonoBehaviour
     public void SaveMap(string filename)
     {
         UpdateMapInfoFromEditor();
-
         string path = "Assets/ScriptableObjects/Levels/" + filename + ".asset";
         Level level = ScriptableObject.CreateInstance<Level>();
         level.sceneName = filename;
-        level.platformInfo = platformInfo;
+
+        List<PlatformInfo> newPlatforms = new List<PlatformInfo>();
+        for (int i = 0; i < platformInfo.Count; i++)
+        {
+            newPlatforms.Add(new PlatformInfo()
+            {
+                position = new Vector2(platformInfo[i].position.x, platformInfo[i].position.y),
+                isSlippery = false,
+                scale = platformInfo[i].scale
+            });
+        }
+
+
+        level.platformInfo = newPlatforms;
+
+        // Calcolo il tempo
+        float timeEstimate = (shortestPath.Count + 2) * 1.4f * 3f;
+        float totalTimeRounded = Mathf.Ceil(timeEstimate / 5f) * 5f;
+        level.maxTime = totalTimeRounded;
+
+        AssetDatabase.CreateAsset(level, path);
+
+    }
+
+    public void SaveMapFlipped(string filename)
+    {
+        UpdateMapInfoFromEditor();
+        string path = "Assets/ScriptableObjects/Levels/" + filename + "_f.asset";
+        Level level = ScriptableObject.CreateInstance<Level>();
+        level.sceneName = filename;
+
+        List<PlatformInfo> flippedPlatforms = new List<PlatformInfo>();
+        for (int i = 0; i < platformInfo.Count; i++)
+        {
+            flippedPlatforms.Add(new PlatformInfo()
+            {
+                position = new Vector2(-platformInfo[i].position.x, platformInfo[i].position.y),
+                isSlippery = false,
+                scale = platformInfo[i].scale
+            });        }
+
+        level.platformInfo = flippedPlatforms;
+
+        // Calcolo il tempo
+        float timeEstimate = (shortestPath.Count + 2) * 1.4f * 3f;
+        float totalTimeRounded = Mathf.Ceil(timeEstimate / 5f) * 5f;
+        level.maxTime = totalTimeRounded;
+
         AssetDatabase.CreateAsset(level, path);
 
     }
 #endif
 
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        if (shortestPath != null)
+        {
+            if (shortestPath.Count > 0)
+            {
+                for (int i = 0; i < shortestPath.Count-1; i++)
+                {
+                    Gizmos.DrawLine(new Vector3(shortestPath[i].position.x,0, shortestPath[i].position.y), new Vector3(shortestPath[i + 1].position.x,0, shortestPath[i + 1].position.y));
+                }
+            }
+        }
+    }
+    class PlatformInfoDijkstra
+    {
+        public PlatformInfo platform;
+        public List<PlatformInfoDijkstra> neighbours;
+        public int distanceFromOrigin;
+        public bool visited;
+        public PlatformInfoDijkstra previous;
+    }
+
+    public void ShortestPath()
+    {
+        int platformNum = platformInfo.Count;
+        float hexagonSize = 1.2f * 3.7f;
+
+        // Cerco lo shortest path con Dijkstra
+        shortestPath = new List<PlatformInfo>();
+        List<PlatformInfoDijkstra> platformsDijkstra = new List<PlatformInfoDijkstra>();
+
+        for (int i = 0; i < platformNum; i++)
+        {
+            platformsDijkstra.Add(new PlatformInfoDijkstra()
+            {
+                platform = platformInfo[i],
+                neighbours = new List<PlatformInfoDijkstra>(),
+                distanceFromOrigin = int.MaxValue,
+                visited = false,
+                previous = null
+            }) ;
+        }
+
+        // Creo una mappa dei vicini per ogni cella
+        for (int i = 0; i < platformNum; i++)
+        {
+            for (int j = (i+1); j < platformNum; j++)
+            {
+                if ((platformsDijkstra[i].platform.position - platformsDijkstra[j].platform.position).magnitude < hexagonSize)
+                {
+                    platformsDijkstra[i].neighbours.Add(platformsDijkstra[j]);
+                    platformsDijkstra[j].neighbours.Add(platformsDijkstra[i]);
+                }
+            }
+        }
+
+        // Seleziono la cella target
+        PlatformInfoDijkstra targetCell = null;
+        float maxHeight = float.MinValue;
+
+        for (int i = 0; i < platformNum; i++)
+        {
+            if (platformsDijkstra[i].platform.position.y > maxHeight)
+            {
+                maxHeight = platformsDijkstra[i].platform.position.y;
+                targetCell = platformsDijkstra[i];
+            }
+        }
+
+        // Setto la distanza del primo a zero
+        platformsDijkstra[0].distanceFromOrigin = 0;
+
+        bool finished = false;
+
+
+        while (!finished)
+        {
+            // Ordino la lista in base al valore della distanza
+            platformsDijkstra.Sort((x,y) => x.distanceFromOrigin.CompareTo(y.distanceFromOrigin));
+
+            // Prendo la più vicina
+            PlatformInfoDijkstra currentCell = platformsDijkstra[0];
+
+            // Se la minima è infinito, non posso raggiungere l'obiettivo
+            if (currentCell.distanceFromOrigin == int.MaxValue)
+            {
+                finished = true;
+                break;
+            }
+
+            // Se ho raggiunto l'obiettivo mi fermo
+            if (currentCell == targetCell)
+            {
+                finished = true;
+                break;
+            }
+
+            // Altrimenti prendo le sue vicine e aggiorno la loro distanza
+            for (int i = 0; i < currentCell.neighbours.Count; i++)
+            {
+                if (currentCell.distanceFromOrigin + 1 < currentCell.neighbours[i].distanceFromOrigin)
+                {
+                    currentCell.neighbours[i].distanceFromOrigin = currentCell.distanceFromOrigin + 1;
+                    currentCell.neighbours[i].previous = currentCell;
+                }
+            }
+
+            // Elimino questa cella dalla lista
+            platformsDijkstra.Remove(currentCell);
+        }
+        
+        // Creo il path
+        PlatformInfoDijkstra cell = targetCell;
+        shortestPath.Add(cell.platform);
+
+        while (cell.previous != null)
+        {
+            shortestPath.Add(cell.previous.platform);
+            cell = cell.previous;
+        }
+
+        float timeEstimate = (shortestPath.Count + 2) * 1.4f * 3f;
+        float totalTimeRounded = Mathf.Ceil(timeEstimate / 5f) * 5f;
+        Debug.Log("Shortest path length = " + shortestPath.Count + "\t time estimate 3 stars = " + timeEstimate / 3f + "\t time total = " + timeEstimate + "\t rounded = "+ totalTimeRounded);
+    }
 
     public void LoadMap(Level level)
     {
-        platformInfo = level.platformInfo;
+        List<PlatformInfo> newPlatforms = new List<PlatformInfo>();
+        for (int i = 0; i < level.platformInfo.Count; i++)
+        {
+            newPlatforms.Add(new PlatformInfo()
+            {
+                position = new Vector2(level.platformInfo[i].position.x, level.platformInfo[i].position.y),
+                isSlippery = false,
+                scale = level.platformInfo[i].scale
+            });
+        }
+
+        platformInfo = newPlatforms;
         ResetMap();
         CreateMap();
+        ShortestPath();
     }
 
     public void UpdateMapInfoFromEditor()

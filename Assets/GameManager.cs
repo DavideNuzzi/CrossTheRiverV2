@@ -9,7 +9,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Rendering.PostProcessing;
 using UnityEngine.SceneManagement;
-using static LevelManager;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
@@ -29,19 +29,31 @@ public class GameManager : MonoBehaviour
     public GameObject coinSound;
     public GameObject penaltySound;
 
-    private TMP_Text timerUI;
+//    private TMP_Text timerUI;
     private TMP_Text startingTextUI;
-    private TMP_Text scoreUI;
-    private TMP_Text penaltiesUI;
+ //   private TMP_Text scoreUI;
+//    private TMP_Text penaltiesUI;
     private TMP_Text winTextUI;
     private TMP_Text levelNameUI;
+    private TMP_Text starsCollectedUI;
+
+    private Image starScoreImage;
+    private GameObject starsContainer;
+
+    public bool resetFirstStone = false;
 
     public Animator characterAnimator;
+
+    Coroutine timerRoutine = null;
 
     private Vector3 startingPlayerPosition;
     private bool isTrainingLevel;
     public bool resettingLevel;
     private float score = 0;
+    private float levelScore = 0;
+    private float levelMaxTime = 0;
+
+    private int starsCollected = 0;
 
     public bool levelRunning = false;
     string currentLevelName = "";
@@ -68,7 +80,7 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
-       // Application.targetFrameRate = 30;
+        Application.targetFrameRate = 40;
 
 
         // Voglio che il game-manager rimanga in ogni livello
@@ -173,11 +185,15 @@ public class GameManager : MonoBehaviour
         mapManager = GameObject.Find("Map").GetComponent<MapManager>();
         postProcessVolume = GameObject.Find("PostPro").GetComponent<PostProcessVolume>();
         startingTextUI = GameObject.Find("ClickAnywhere").GetComponent<TMP_Text>();
-        timerUI = GameObject.Find("Timer").GetComponent<TMP_Text>();
-        scoreUI = GameObject.Find("Score").GetComponent<TMP_Text>();
-        penaltiesUI = GameObject.Find("Penalty").GetComponent<TMP_Text>();
+  //      timerUI = GameObject.Find("Timer").GetComponent<TMP_Text>();
+  //      scoreUI = GameObject.Find("Score").GetComponent<TMP_Text>();
+        starsCollectedUI = GameObject.Find("StarsText").GetComponent<TMP_Text>();
+
+      //  penaltiesUI = GameObject.Find("Penalty").GetComponent<TMP_Text>();
         winTextUI = GameObject.Find("WinText").GetComponent<TMP_Text>();
         levelNameUI = GameObject.Find("LevelName").GetComponent<TMP_Text>();
+        starScoreImage = GameObject.Find("StarsFiller").GetComponent<Image>();
+        starsContainer = GameObject.Find("StarsContainer");
 
         characterAnimator = characterController.gameObject.GetComponent<Animator>();
         playerInput = characterController.gameObject.GetComponent<PlayerInput>();
@@ -187,16 +203,27 @@ public class GameManager : MonoBehaviour
 
         winTextUI.gameObject.SetActive(false);
         levelNameUI.text = level.name;
+        resetFirstStone = level.returnFirstRock;
 
         timer = level.maxTime;
-        if (level.maxTime == 0) timer = 60;
+        levelMaxTime = level.maxTime;
+        if (level.maxTime == 0 || float.IsNaN(level.maxTime))
+        {
+            timer = 60;
+            levelMaxTime = 60;
+        }
+        levelScore = 1;
 
         penaltyNum = 0;
+
         if (isTrainingLevel)
         {
-            timerUI.gameObject.SetActive(false);
-            penaltiesUI.gameObject.SetActive(false);
-            scoreUI.gameObject.SetActive(false);
+          //  timerUI.gameObject.SetActive(false);
+          //  penaltiesUI.gameObject.SetActive(false);
+          //  scoreUI.gameObject.SetActive(false);
+            starsCollectedUI.gameObject.SetActive(false);
+            starsContainer.SetActive(false);
+
         }
         UpdateUI();
 
@@ -237,7 +264,7 @@ public class GameManager : MonoBehaviour
 
         startingTextUI.gameObject.SetActive(false);
 
-        if (!isTrainingLevel) StartCoroutine(GameTimer());
+        if (!isTrainingLevel) timerRoutine = StartCoroutine(GameTimer());
 
     }
 
@@ -255,6 +282,7 @@ public class GameManager : MonoBehaviour
         levelRunning = false;
         playerInput.enabled = false;
         characterAnimator.SetBool("Lost", true);
+
         if (!isTrainingLevel) penaltyNum++;
         UpdateUI();
 
@@ -271,16 +299,24 @@ public class GameManager : MonoBehaviour
         Vector3 p2 = startingPlayerPosition + new Vector3(0,0.5f,0);
 
         // Se esiste una piattaforma precedente vado lì
-        for (int i = dataCollector.simplifiedData.Count-1; i > 0; i--)
+        if (!resetFirstStone)
         {
-            if (dataCollector.simplifiedData[i].type == 0)
+            for (int i = dataCollector.simplifiedData.Count - 1; i > 0; i--)
             {
-                p2 = dataCollector.simplifiedData[i].position + new Vector3(0, 0.5f, 0);
-                break;
+                if (dataCollector.simplifiedData[i].type == 0)
+                {
+                    p2 = dataCollector.simplifiedData[i].position + new Vector3(0, 0.5f, 0);
+                    break;
+                }
             }
         }
+
         float dist = (p2 - p1).magnitude;
         float interpTime = dist/9f;
+
+        //  if (resetFirstStone) interpTime = 2f;
+        //  else interpTime = 0.5f;
+        interpTime = Mathf.Clamp(interpTime, 0.5f, 2.5f);
 
         while (t < interpTime)
         {
@@ -308,8 +344,12 @@ public class GameManager : MonoBehaviour
     {
         while (true)
         {
-            if (levelRunning) timer -= Time.deltaTime;
+            //if (levelRunning) timer -= Time.deltaTime;
+            timer -= Time.deltaTime;
+            levelScore = timer / levelMaxTime;
+
             UpdateUI();
+
             yield return null;
 
             if (timer <= 0)
@@ -319,9 +359,9 @@ public class GameManager : MonoBehaviour
                 if (levelRunning)
                 {
                     StartCoroutine(LosingSequence());
+                    break;
                 }
 
-                break;
             }
         }
     }
@@ -403,8 +443,10 @@ public class GameManager : MonoBehaviour
         playerInput.enabled = false;
         characterAnimator.SetBool("Won", true);
         confettiParticles.SetActive(true);
+        dataCollector.isCollecting = false;
 
-        StopCoroutine(GameTimer());
+        if (timerRoutine != null) StopCoroutine(timerRoutine);
+  //      StopCoroutine(GameTimer());
 
         // Salvo sul server
         SaveLevelData();
@@ -417,9 +459,10 @@ public class GameManager : MonoBehaviour
         winTextUI.rectTransform.anchoredPosition = new Vector2(Screen.width,0);
         winTextUI.gameObject.SetActive(true);
         yield return StartCoroutine(MoveUI(winTextUI.rectTransform, new Vector2(0, 0)));
+        yield return StartCoroutine(CalculateStarScore());
 
-        yield return StartCoroutine(CalculateScore());
-        yield return StartCoroutine(CalculatePenalties());
+      //  yield return StartCoroutine(CalculateScore());
+      //  yield return StartCoroutine(CalculatePenalties());
 
         yield return new WaitForSeconds(2);
 
@@ -428,6 +471,50 @@ public class GameManager : MonoBehaviour
     }
 
 
+    public IEnumerator CalculateStarScore()
+    {
+        // Sposto il contenitore delle stelle
+        yield return StartCoroutine(MoveUI(starsContainer.GetComponent<RectTransform>(), new Vector2(0, -165)));
+
+        // Approssimo al numero di stelle reali
+        int starsCollectedLevel = Mathf.CeilToInt(levelScore * 3);
+
+        // Mostro questa cosa
+        for (int k = 0; k < starsCollectedLevel; k++)
+        {
+            if (levelScore < (k+1)/3f) levelScore = (k + 1) / 3f;
+            UpdateUI();
+            Instantiate(coinSound);
+            yield return StartCoroutine(ScaleBounceUI(starsContainer.GetComponent<RectTransform>(), 1.1f,0.5f));
+        }
+
+        // Aggiungo al punteggio totale di stelle
+        StartCoroutine(ScaleBounceUI(starsContainer.GetComponent<RectTransform>(), 0.3f,1f));
+        StartCoroutine(MoveUI(starsContainer.GetComponent<RectTransform>(), new Vector2(540, -50)));
+        yield return new WaitForSeconds(0.4f);
+        starsContainer.SetActive(false);
+
+        starsCollected += starsCollectedLevel;
+        UpdateUI();
+    }
+
+    public IEnumerator ScaleBounceUI (RectTransform ui, float scaleFac, float T)
+    {
+        float t = 0;
+        Vector3 p0 = ui.localScale;
+        Vector3 p = ui.localScale * scaleFac;
+
+        while (t <= T)
+        {
+            float fac = EaseOutElastic(t / T);
+            Vector3 posNew = (1 - fac) * p0 + fac * p;
+            ui.localScale = posNew;
+            t += Time.deltaTime;
+            yield return null;
+        }
+        ui.localScale = p;
+    }
+
     public IEnumerator LosingSequence()
     {
         levelRunning = false;
@@ -435,6 +522,11 @@ public class GameManager : MonoBehaviour
         // Tolgo il controllo al giocatore
         playerInput.enabled = false;
         characterAnimator.SetBool("Lost", true);
+        dataCollector.isCollecting = false;
+
+        // Aggiungo un ultimo punto
+        dataCollector.AddSimplifiedPoint(characterController.transform.position, 4);
+
 
         // Salvo sul server
         SaveLevelData();
@@ -450,7 +542,7 @@ public class GameManager : MonoBehaviour
 
         yield return StartCoroutine(MoveUI(winTextUI.rectTransform, new Vector2(0, 0)));
 
-        yield return StartCoroutine(CalculatePenalties());
+//        yield return StartCoroutine(CalculatePenalties());
         yield return new WaitForSeconds(2);
 
 
@@ -461,11 +553,16 @@ public class GameManager : MonoBehaviour
 
     public void UpdateUI()
     {
-        timerUI.text = "Time left: " + timer.ToString("F1") + "s";
-        scoreUI.text = "Score: " + score.ToString("F1");
-        penaltiesUI.text = "Penalties: " + penaltyNum;
+    //    timerUI.text = "Time left: " + timer.ToString("F1") + "s";
+    //    scoreUI.text = "Score: " + score.ToString("F1");
+
+        starsCollectedUI.text = starsCollected.ToString();
+     //   penaltiesUI.text = "Penalties: " + penaltyNum;
+
+        starScoreImage.fillAmount = levelScore;
     }
 
+    /*
     public IEnumerator MoveScoreUI(Vector2 pos)
     {
         float t = 0;
@@ -484,6 +581,7 @@ public class GameManager : MonoBehaviour
         scoreUI.rectTransform.anchoredPosition = pos;
 
     }
+    */
 
     public IEnumerator MoveUI(RectTransform ui, Vector2 pos)
     {
@@ -633,7 +731,7 @@ public class GameManager : MonoBehaviour
     private void Update()
     {
         if (dataCollector) dataCollector.time = timer;
-        
+
     }
     /*
     private IEnumerator StartGameCoroutine()

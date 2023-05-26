@@ -43,6 +43,13 @@ public class MapManagerEditor : Editor
         mapManager.levelSaveFilename = EditorGUILayout.TextField("Map to save", mapManager.levelSaveFilename);
 
         if (GUILayout.Button("Save Map")) mapManager.SaveMap(mapManager.levelSaveFilename);
+        if (GUILayout.Button("Save Map Flipped")) mapManager.SaveMapFlipped(mapManager.levelSaveFilename);
+
+        if (GUILayout.Button("Calculate shortest path"))
+        {
+            mapManager.ShortestPath();
+            Debug.Log("Shortest path length = " + mapManager.shortestPath.Count);
+        }
 
 
     }

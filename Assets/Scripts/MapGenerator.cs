@@ -51,6 +51,19 @@ public class MapGenerator : MonoBehaviour
     public float hexSize = 1f;
     [HideInInspector]
     public float shuffleFactor = 0.2f;
+    [HideInInspector]
+    public int minPathLength = 3;
+    [HideInInspector]
+    public int maxPathLength = 7;
+    [HideInInspector]
+    public float smallPathStraightProbability = 1f;
+    [HideInInspector]
+    public int smallPathMinimumLength = 3;
+    [HideInInspector]
+    public int smallPathNumber = 3;
+
+
+
 
     [HideInInspector]
     public float platformScaleHexSmall = 0.7f;
@@ -282,6 +295,7 @@ public class MapGenerator : MonoBehaviour
         }
     }
 
+    /*
     public List<PlatformInfo> HexGridGenerationSimple(HexGridParams hexParams)
     {
         // Costruisco il path più breve
@@ -336,7 +350,7 @@ public class MapGenerator : MonoBehaviour
         }
         return platformInfo;
     }
-
+     
     public List<PlatformInfo> HexGridGenerationComplex(List<PlatformInfo> platformInfo, HexGridParams hexParams)
     {
         Vector2 mapSize = hexParams.mapSize;
@@ -406,10 +420,156 @@ public class MapGenerator : MonoBehaviour
         }
         return platformInfo;
     }
+   
+
+    */
+
+    public List<PlatformInfo> HexGridGenerationComplex(List<PlatformInfo> platformInfo, HexGridParams hexParams)
+    {
+        // Rimuovo tutte le pietre piccole che già ci sono
+        for (int i = 0; i < platformInfo.Count; i++)
+        {
+            if (platformInfo[i].scale < hexParams.platformScale * 0.9f)
+            {
+                platformInfo.RemoveAt(i);
+                i--;
+            }
+        }
+
+        Vector2 mapSize = hexParams.mapSize;
+        float s = hexParams.size;
+
+
+        int pathsToGenerate = hexParams.smallPathNumber;
+        float straightProbability = hexParams.smallPathStraightProbability;
+        int pathMinimumLength = hexParams.smallPathMinimumLength;
+
+
+        // Scelgo una pietra a caso e provo a generare un path da essa
+        // Il path continua in verticale finché non trova una nuova roccia a "distanza"
+        int pathsAdded = 0;
+
+        for (int n = 0; n < 500; n++)
+        {
+            PlatformInfo randomPlatformStart = platformInfo[Random.Range(0, platformInfo.Count)];
+            List<PlatformInfo> possiblePath = new List<PlatformInfo>();
+            bool pathValid = true;
+
+            if (randomPlatformStart.scale < hexParams.platformScale) continue;
+
+            while (pathValid)
+            {
+                Vector2 lastPlatformPos = randomPlatformStart.position;
+                if (possiblePath.Count > 0) lastPlatformPos = possiblePath[possiblePath.Count - 1].position;
+
+                Vector2 delta = Vector2.zero;
+                float r = Random.value;
+
+                if (r < straightProbability) delta = new Vector2(0, 3f * s);
+                else if (r < straightProbability + (1 - straightProbability) / 2f + 1e-5) delta = new Vector2(1.5f * s  *Mathf.Sqrt(3), 1.5f * s);
+                else delta = new Vector2(-1.5f * s * Mathf.Sqrt(3), 1.5f * s);
+
+
+                Vector2 newPos = lastPlatformPos + delta;
+
+                // Controllo se la nuova posizione coincide con una pietra già presente, in tal caso il path è finito
+                bool goodPos = GoodNewPositionHex(platformInfo, newPos, 2.5f * s);
+
+                if (goodPos)
+                {
+                    PlatformInfo newPlatform = new PlatformInfo()
+                    {
+                        position = newPos,
+                        isSlippery = false,
+                        scale = hexParams.platformScale * 0.7f
+                    };
+
+                    possiblePath.Add(newPlatform);
+                }
+                else
+                {
+                    break;
+                }
+
+                // Se ho superato il bordo smetto
+                if (newPos.y > mapSize.y / 2f || newPos.x < -mapSize.x / 2f || newPos.x > mapSize.x / 2f) pathValid = false;
+            }
+
+
+            // Non creo davvero il path se è troppo corto
+            if (possiblePath.Count >= pathMinimumLength && pathValid)
+            {
+                platformInfo.AddRange(possiblePath);
+                pathsAdded++;
+            }
+
+            if (pathsAdded >= pathsToGenerate) break;
+        }
+
+        return platformInfo;
+
+    }
+
+    public List<PlatformInfo> HexGridGenerationSimple(HexGridParams hexParams)
+    {
+        List<PlatformInfo> platformInfo = new List<PlatformInfo>();
+
+        Vector2 mapSize = hexParams.mapSize;
+        float s = hexParams.size;
+        int minPathLength = hexParams.minPathLength;
+        int maxPathLength = hexParams.maxPathLength + 1;
+
+        bool lastPath = false;
+
+        // Metto la prima piattaforma e imposto casualmente la prima direzione e lunghezza
+        PlatformInfo platform = new PlatformInfo() { position = new Vector2(0, -mapSize.y / 2f), isSlippery = false, scale = hexParams.platformScale };
+        platformInfo.Add(platform);
+
+        int dir = -1; // Sinistra
+        if (Random.value < 0.5f) dir = 1; // Destra
+
+        for (int i = 0; i < 100; i++)
+        {
+            int length = Random.Range(minPathLength, maxPathLength);
+            dir *= -1;
+
+            // Controllo se sono all'ultimo, in tal caso lo forzo
+            Vector2 oldPos = platformInfo[platformInfo.Count - 1].position;
+            float goalDeltaY = Mathf.Abs(oldPos.y - mapSize.y / 2f);
+            float goalDeltaX = oldPos.x;
+            float upShift = 1.5f * s;
+
+            if (goalDeltaY < maxPathLength * upShift)
+            {
+                length = Mathf.RoundToInt(goalDeltaY / (upShift));
+                if (goalDeltaX > 0) dir = -1;
+                else dir = 1;
+                lastPath = true;
+            }
+
+            for (int n = 0; n < length; n++)
+            {
+                Vector2 newPos = platformInfo[platformInfo.Count - 1].position + new Vector2(dir * 1.5f * Mathf.Sqrt(3) * s, 1.5f * s);
+                PlatformInfo newPlatform = new PlatformInfo()
+                {
+                    position = newPos,
+                    isSlippery = false,
+                    scale = hexParams.platformScale
+                };
+
+                platformInfo.Add(newPlatform);
+            }
+
+            if (lastPath) break;
+
+        }
+
+        return platformInfo;
+    }
+
 
     bool GoodNewPositionHex(List<PlatformInfo> platforms, Vector2 newPos, float minDist)
     {
-        // Per essere buona deve essere a distanza almeno pari a quella del terzo vicino
         bool good = true;
 
         for (int i = 0; i < platforms.Count; i++)
@@ -430,6 +590,53 @@ public class MapGenerator : MonoBehaviour
         {
             Vector2 newPos = platforms[i].position + (Vector2.one * (Random.value * 2f - 1f)) * shuffleFactor;
             platforms[i] = new PlatformInfo() { position = newPos, isSlippery = platforms[i].isSlippery, scale = platforms[i].scale };
+        }
+
+        return platforms;
+    }
+
+    public List<PlatformInfo> ShufflePlatformsOrthogonal(List<PlatformInfo> platforms, float shuffleFactor, HexGridParams hexParams)
+    {
+        // Shuffling delle piattaforme fatto in maniera intelligente, cioè ortogonalmente alla direzione che le separa dalle altre piattaforme vicine
+        // Se è più di una prendo la media pesata
+        Vector2[] displacementVectors = new Vector2[platforms.Count];
+
+        for (int i = 0; i < platforms.Count; i++)
+        {
+            Vector2 pathDir = Vector2.zero;
+            float weight = 0;
+
+            for (int j = 0; j < platforms.Count; j++)
+            {
+                if (i != j)
+                {
+                    if ((platforms[j].position - platforms[i].position).magnitude < 3.5f * hexParams.size)
+                    {
+                        Vector2 dir = (platforms[j].position - platforms[i].position).normalized;
+
+                        if (j > i) dir *= -1;
+
+                        weight += platforms[j].scale;
+                        pathDir += dir * platforms[j].scale;
+                    }
+                }
+            }
+            if (weight > 0)
+            {
+                pathDir /= weight;
+                Vector3 orthoVector = Vector3.Cross(new Vector3(pathDir.x, 0, pathDir.y), new Vector3(0, 1, 0));
+                displacementVectors[i] = new Vector2(orthoVector.x, orthoVector.z);
+            }
+        }
+
+        for (int i = 0; i < platforms.Count; i++)
+        {
+            PlatformInfo platform = platforms[i];
+            platform.position += (Random.value - 0.5f) * shuffleFactor * displacementVectors[i];
+          //  platform.position += displacementVectors[i];
+
+            platforms[i] = platform;
+
         }
 
         return platforms;
@@ -679,6 +886,12 @@ public struct HexGridParams
     public Vector2 mapSize;
     public float platformScale;
     public float size;
+    public int minPathLength;
+    public int maxPathLength;
+    public float smallPathStraightProbability;
+    public int smallPathMinimumLength;
+    public int smallPathNumber;
+
 }
 
 public struct HexGridParamsRegular

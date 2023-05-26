@@ -6,8 +6,7 @@ public class Level : GameScene
 {
     [Header("Level specific")]
     public bool isTraining;
-    public bool isSlippery;
-    public bool isTall;
+    public bool returnFirstRock;
     public float maxTime;
     public List<PlatformInfo> platformInfo;
 

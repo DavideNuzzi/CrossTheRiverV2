@@ -115,48 +115,59 @@ public class MapGeneratorEditor : Editor
         mapGenerator.platformScaleHex = EditorGUILayout.FloatField("Platform Scale", mapGenerator.platformScaleHex);
         mapGenerator.hexSize = EditorGUILayout.FloatField("Hexagon size", mapGenerator.hexSize);
         mapGenerator.shuffleFactor = EditorGUILayout.FloatField("Shuffle factor", mapGenerator.shuffleFactor);
+        mapGenerator.minPathLength = EditorGUILayout.IntField("Min path length", mapGenerator.minPathLength);
+        mapGenerator.maxPathLength = EditorGUILayout.IntField("Max path length", mapGenerator.maxPathLength);
+        mapGenerator.smallPathNumber = EditorGUILayout.IntField("Number of small paths", mapGenerator.smallPathNumber);
+        mapGenerator.smallPathStraightProbability = EditorGUILayout.FloatField("Small Path Straightness", mapGenerator.smallPathStraightProbability);
+        mapGenerator.smallPathMinimumLength = EditorGUILayout.IntField("Small path minimum length", mapGenerator.smallPathMinimumLength);
+
+
+        HexGridParams hexParams = new HexGridParams()
+        {
+            mapSize = mapGenerator.mapSizeHex,
+            platformScale = mapGenerator.platformScaleHex,
+            size = mapGenerator.hexSize,
+            minPathLength = mapGenerator.minPathLength,
+            maxPathLength = mapGenerator.maxPathLength,
+            smallPathNumber = mapGenerator.smallPathNumber,
+            smallPathStraightProbability = mapGenerator.smallPathStraightProbability,
+            smallPathMinimumLength = mapGenerator.smallPathMinimumLength
+        };
 
         if (GUILayout.Button("Generate simple path"))
         {
-            HexGridParams hexParams = new HexGridParams()
-            {
-                mapSize = mapGenerator.mapSizeHex,
-                platformScale = mapGenerator.platformScaleHex,
-                size = mapGenerator.hexSize
-            };
-
             List<PlatformInfo> info = mapGenerator.HexGridGenerationSimple(hexParams);
             mapGenerator.mapManager.platformInfo = info;
             mapGenerator.mapManager.ResetMap();
             mapGenerator.mapManager.CreateMap();
-         //   mapGenerator.mapManager.PlaceStartEndPlatforms()
+            mapGenerator.mapManager.ShortestPath();
+
+            //   mapGenerator.mapManager.PlaceStartEndPlatforms()
         }
 
         if (GUILayout.Button("Generate complex path"))
         {
-            HexGridParams hexParams = new HexGridParams()
-            {
-                mapSize = mapGenerator.mapSizeHex,
-                platformScale = mapGenerator.platformScaleHex,
-                size = mapGenerator.hexSize
-            };
-
+          
             List<PlatformInfo> info = mapGenerator.HexGridGenerationComplex(mapGenerator.mapManager.platformInfo,hexParams);
             mapGenerator.mapManager.platformInfo = info;
             mapGenerator.mapManager.ResetMap();
             mapGenerator.mapManager.CreateMap();
+            mapGenerator.mapManager.ShortestPath();
+
             //   mapGenerator.mapManager.PlaceStartEndPlatforms()
         }
 
         if (GUILayout.Button("Shuffle Platforms"))
         {
-            List<PlatformInfo> info = mapGenerator.ShufflePlatforms(mapGenerator.mapManager.platformInfo, mapGenerator.shuffleFactor);
+            List<PlatformInfo> info = mapGenerator.ShufflePlatformsOrthogonal(mapGenerator.mapManager.platformInfo, mapGenerator.shuffleFactor, hexParams);
             mapGenerator.mapManager.platformInfo = info;
             mapGenerator.mapManager.ResetMap();
             mapGenerator.mapManager.CreateMap();
+            mapGenerator.mapManager.ShortestPath();
+
         }
 
-
+        /*
         EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
         EditorGUILayout.LabelField("Hexagonal Grid Random Size", titleStyle);
         EditorGUILayout.Space(15f);
@@ -180,6 +191,10 @@ public class MapGeneratorEditor : Editor
             mapGenerator.mapManager.ResetMap();
             mapGenerator.mapManager.CreateMap();
         }
+
+        */
+
+
 
     }
 

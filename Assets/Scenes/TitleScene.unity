@@ -2523,7 +2523,7 @@ RectTransform:
   m_GameObject: {fileID: 73908500}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.70451987, y: 0.70451987, z: 0.70451987}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1831213704}
@@ -2532,7 +2532,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 225.4}
-  m_SizeDelta: {x: 700, y: 126}
+  m_SizeDelta: {x: 1161, y: 192}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &73908502
 MonoBehaviour:
@@ -6417,6 +6417,7 @@ MonoBehaviour:
   - scale: 1
     position: {x: -1.1558945, y: 9.162056}
     isSlippery: 0
+  shortestPath: []
   levelToLoad: {fileID: 0}
   levelSaveFilename: 
 --- !u!4 &229072202
@@ -7587,15 +7588,18 @@ MonoBehaviour:
   gameScenes:
   - {fileID: 11400000, guid: ddf89420a14f398408482fafd9c7aa4f, type: 2}
   - {fileID: 11400000, guid: ac8a67ebacdd8f945a51be2568c1574c, type: 2}
-  - {fileID: 11400000, guid: d4e0fd3dba47ebc4598d7fdb93b743a6, type: 2}
-  - {fileID: 11400000, guid: c54ddc05f4454e849832a2917f8e44b7, type: 2}
-  - {fileID: 11400000, guid: 189326bf30429d348a79b0eac2cb4faf, type: 2}
-  - {fileID: 11400000, guid: 44617a02c7985c248aaa1e53cfac0729, type: 2}
-  - {fileID: 11400000, guid: 5de3f927644a08245a544f92133f70be, type: 2}
-  - {fileID: 11400000, guid: 4de4bfffc525b8b4bae86a78b2a288c0, type: 2}
-  - {fileID: 11400000, guid: cd2d0276c79d5f940806ef6549e8896e, type: 2}
+  - {fileID: 11400000, guid: 7b0dc538fcd385e4f9d299b578207d21, type: 2}
+  - {fileID: 11400000, guid: 172b034d204ab8140a221ac1cbbdbf3c, type: 2}
+  - {fileID: 11400000, guid: 8c379256d93f4eb4283e78e86e85fe97, type: 2}
+  - {fileID: 11400000, guid: d055633e328fcbe4f815ad9891b863a9, type: 2}
+  - {fileID: 11400000, guid: 50ee667e73e0c694d9fe7d3fe66ad15b, type: 2}
+  - {fileID: 11400000, guid: ea720e311698701459ad7d6e3e24cca5, type: 2}
+  - {fileID: 11400000, guid: 9ea6a782026f0824091c4d257de3e052, type: 2}
+  - {fileID: 11400000, guid: 6eaad7f98be63d149af133a05d95ea44, type: 2}
+  - {fileID: 11400000, guid: 182e5673db2ad5642a7588fc49b4a841, type: 2}
   coinSound: {fileID: 1540928970154281486, guid: f73f8c2f406a24140a0a321cac3b0d9e, type: 3}
   penaltySound: {fileID: 6820562089335813555, guid: 7828dd4194227894bb64f7d31b7532d3, type: 3}
+  resetFirstStone: 0
   characterAnimator: {fileID: 0}
   resettingLevel: 0
   levelRunning: 0
