@@ -10,6 +10,7 @@ using UnityEngine.InputSystem;
 using UnityEngine.Rendering.PostProcessing;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using System.Linq;
 
 public class GameManager : MonoBehaviour
 {
@@ -18,7 +19,9 @@ public class GameManager : MonoBehaviour
     public List<GameScene> gameScenes;
     private int currentScene = -1;
     private int currentLevelInBlock = 0;
+    private List<int> currentBlockIndices;
     private float timer;
+    private float timerIncreasing = 0f;
 
     private MapManager mapManager;
     private ThirdPersonController characterController;
@@ -44,6 +47,8 @@ public class GameManager : MonoBehaviour
 
     public Animator characterAnimator;
 
+    int globalLevelCounter = 0;
+
     Coroutine timerRoutine = null;
 
     private Vector3 startingPlayerPosition;
@@ -58,6 +63,8 @@ public class GameManager : MonoBehaviour
     public bool levelRunning = false;
     string currentLevelName = "";
     int penaltyNum = 0;
+
+
 
     private PlayerInfo playerInfo;
 
@@ -80,7 +87,7 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
-        Application.targetFrameRate = 40;
+        //Application.targetFrameRate = 40;
 
 
         // Voglio che il game-manager rimanga in ogni livello
@@ -97,13 +104,18 @@ public class GameManager : MonoBehaviour
         {
             if (gameScenes[currentScene].GetType() == typeof(Block))
             {
-                currentLevelInBlock++;
-
+           
                 Block block = (Block)gameScenes[currentScene];
-                Level level = block.levels[currentLevelInBlock];
+                if (currentLevelInBlock < block.levels.Count - 1)
+                {
+                    currentLevelInBlock++;
 
-                StartCoroutine(LoadLevelScene(level));
-                return;
+
+                    Level level = block.levels[currentBlockIndices[currentLevelInBlock]];
+
+                    StartCoroutine(LoadLevelScene(level));
+                    return;
+                }
             }
         }
         
@@ -127,8 +139,20 @@ public class GameManager : MonoBehaviour
         else if (scene.GetType() == typeof(Block))
         {
             currentLevelInBlock = 0;
+
             Block block = (Block)gameScenes[currentScene];
-            Level level = block.levels[currentLevelInBlock];
+
+            // Inizializzo la lista degli indici per questo blocco
+            currentBlockIndices = new List<int>();
+            for (int i = 0; i < block.levels.Count; i++) currentBlockIndices.Add(i);
+
+            System.Random rnd = new System.Random(currentScene);
+
+            if (block.randomize) currentBlockIndices = currentBlockIndices.OrderBy(x => rnd.Next()).ToList();
+
+            Level level = block.levels[currentBlockIndices[currentLevelInBlock]];
+
+
             StartCoroutine(LoadLevelScene(level));
         }
 
@@ -164,6 +188,7 @@ public class GameManager : MonoBehaviour
     {
         levelRunning = false;
         isTrainingLevel = level.isTraining;
+        resettingLevel = false;
 
         AsyncOperation asyncLoading = SceneManager.LoadSceneAsync("LevelScene", LoadSceneMode.Single);
         Debug.Log("Inizio a caricare il livello: "+level.name);
@@ -200,11 +225,23 @@ public class GameManager : MonoBehaviour
 
         dataCollector = GameObject.Find("DataCollector").GetComponent<DataCollector>();
         dataCollector.Initialize();
+        dataCollector.isCollecting = false;
 
         winTextUI.gameObject.SetActive(false);
-        levelNameUI.text = level.name;
+
+        if (isTrainingLevel) levelNameUI.text = level.sceneName;
+        else
+        {
+            if (gameScenes[currentScene].GetType() == typeof(Block))
+            {
+                levelNameUI.text = (currentLevelInBlock + 1).ToString() + " / " + ((Block)(gameScenes[currentScene])).levels.Count;
+            }
+            else levelNameUI.text = "";
+        }
+
         resetFirstStone = level.returnFirstRock;
 
+        timerIncreasing = 0f;
         timer = level.maxTime;
         levelMaxTime = level.maxTime;
         if (level.maxTime == 0 || float.IsNaN(level.maxTime))
@@ -234,9 +271,13 @@ public class GameManager : MonoBehaviour
 
         // Creo fisicamente la mappa
         mapManager.platformInfo = level.platformInfo;
+
+
         mapManager.ResetMap();
         mapManager.CreateMap();
         mapManager.PlaceStartEndPlatforms();
+        mapManager.ShufflePlatforms(2f, 1.2f);
+
 
         yield return new WaitForSeconds(0.2f);
         characterController.enabled = true;
@@ -263,8 +304,11 @@ public class GameManager : MonoBehaviour
         dataCollector.AddSimplifiedPoint(characterController.transform.position, 0);
 
         startingTextUI.gameObject.SetActive(false);
+        dataCollector.isCollecting = true;
 
-        if (!isTrainingLevel) timerRoutine = StartCoroutine(GameTimer());
+        timerRoutine = StartCoroutine(GameTimer());
+
+        globalLevelCounter++;
 
     }
 
@@ -344,25 +388,31 @@ public class GameManager : MonoBehaviour
     {
         while (true)
         {
-            //if (levelRunning) timer -= Time.deltaTime;
-            timer -= Time.deltaTime;
-            levelScore = timer / levelMaxTime;
+            timerIncreasing += Time.deltaTime;
 
-            UpdateUI();
+            if (!isTrainingLevel)
+            {
+                //if (levelRunning) timer -= Time.deltaTime;
+                timer -= Time.deltaTime;
+                levelScore = timer / levelMaxTime;
 
+                UpdateUI();
+
+
+                if (timer <= 0)
+                {
+                    timer = 0;
+                    // Qui devo chiamare la routine finale
+                    if (levelRunning)
+                    {
+                        StartCoroutine(LosingSequence());
+                        break;
+                    }
+
+                }
+            }
             yield return null;
 
-            if (timer <= 0)
-            {
-                timer = 0;
-                // Qui devo chiamare la routine finale
-                if (levelRunning)
-                {
-                    StartCoroutine(LosingSequence());
-                    break;
-                }
-
-            }
         }
     }
 
@@ -456,10 +506,14 @@ public class GameManager : MonoBehaviour
 
         // Sposto il punteggio al centro
         StartCoroutine(AddBlur());
-        winTextUI.rectTransform.anchoredPosition = new Vector2(Screen.width,0);
+        winTextUI.rectTransform.anchoredPosition = new Vector2(Screen.width, 0);
         winTextUI.gameObject.SetActive(true);
         yield return StartCoroutine(MoveUI(winTextUI.rectTransform, new Vector2(0, 0)));
-        yield return StartCoroutine(CalculateStarScore());
+
+        if (!isTrainingLevel)
+        {
+            yield return StartCoroutine(CalculateStarScore());
+        }
 
       //  yield return StartCoroutine(CalculateScore());
       //  yield return StartCoroutine(CalculatePenalties());
@@ -642,12 +696,16 @@ public class GameManager : MonoBehaviour
             data = dataCollector.data.ToArray(),
             simplifiedData = dataCollector.simplifiedData.ToArray(),
             levelName = currentLevelName,
-            levelOrder = currentScene
+            levelOrder = globalLevelCounter
         };
-        string json = JsonUtility.ToJson(runData, true);
+        //string json = JsonUtility.ToJson(runData, true);
+
+        // PER ORA FACCIO UN SALVATAGGIO SEMPLIFICATO PER RISPARMIARE SPAZIO!!!!!!!!!!
+        RunDataString dataString = CreateStringData(runData);
+        string json = JsonUtility.ToJson(dataString, true);
 
         //string json = JsonHelper.ArrayToJsonString(dataCollector.data.ToArray(), true);
-        RestClient.Put<RunData>(databaseURL + playerInfo.username + "_" + playerInfo.randomSeed + "/Results_"+ currentLevelName  + ".json", json)
+        RestClient.Put<RunData>(databaseURL + playerInfo.username + "_" + playerInfo.randomSeed + "/Results_"+ globalLevelCounter+"_"+ currentLevelName  + ".json", json)
         .Then(res => { Debug.Log("Successo!"); })
         .Catch(err => Debug.LogError(err.Message));
     }
@@ -661,6 +719,41 @@ public class GameManager : MonoBehaviour
         .Then(res => { Debug.Log("Successo!"); })
         .Catch(err => Debug.LogError(err.Message));
         */
+    }
+
+    RunDataString CreateStringData(RunData runData)
+    {
+        RunDataString runDataString = new RunDataString();
+
+        string[] dataString = new string[runData.data.Length];
+        string[] eventsString = new string[runData.simplifiedData.Length];
+
+        for (int i = 0; i < runData.data.Length; i++)
+        {
+            string posStr = runData.data[i].position.x.ToString("F2") + "," + runData.data[i].position.y.ToString("F2") + "," + runData.data[i].position.z.ToString("F2");
+
+            float angleDir = Mathf.Atan2(runData.data[i].direction.z, runData.data[i].direction.x);
+            string angleDirStr = angleDir.ToString("F2");
+            string timeStr = runData.data[i].time.ToString("F3");
+
+            dataString[i] = timeStr + "," + posStr + "," + angleDirStr;
+        }
+
+        for (int i = 0; i < runData.simplifiedData.Length; i++)
+        {
+            string timeStr = runData.simplifiedData[i].time.ToString("F3");
+            string posStr = runData.simplifiedData[i].position.x.ToString("F2") + "," + runData.simplifiedData[i].position.z.ToString("F2");
+            string typeStr = runData.simplifiedData[i].type.ToString();
+
+            eventsString[i] = timeStr + "," + posStr + "," + typeStr;
+        }
+
+        runDataString.levelOrder = runData.levelOrder;
+        runDataString.levelName = runData.levelName;
+        runDataString.data = dataString;
+        runDataString.events = eventsString;
+
+        return runDataString;
     }
 
     [Serializable]
@@ -680,8 +773,20 @@ public class GameManager : MonoBehaviour
         public SimplifiedDataPoint[] simplifiedData;
         public string levelName;
         public int levelOrder;
-
     }
+
+
+
+    [Serializable]
+    public class RunDataString
+    {
+        public string levelName;
+        public int levelOrder;
+        public string[] data;
+        public string[] events;
+    }
+
+
 
 
     /*
@@ -730,7 +835,7 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-        if (dataCollector) dataCollector.time = timer;
+        if (dataCollector) dataCollector.time = timerIncreasing;
 
     }
     /*

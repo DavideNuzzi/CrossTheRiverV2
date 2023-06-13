@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fc302359d50591a4f85ae9a485b7d3dc, type: 3}
   m_Name: Training3
   m_EditorClassIdentifier: 
-  sceneName: Training3
+  sceneName: Training 3
   shortDescription: 
   isTraining: 1
   returnFirstRock: 0

@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sceneName: Tutorial Instructions
   shortDescription: 
-  guiPrefab: {fileID: 7427052576031354444, guid: 327f49db6f57d7d4fa14c6cb83301022, type: 3}
+  guiPrefab: {fileID: 7427052576031354444, guid: c147fb33d7532a649a0278c43a282dd1, type: 3}

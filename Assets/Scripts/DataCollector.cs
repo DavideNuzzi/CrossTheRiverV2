@@ -7,7 +7,7 @@ using Proyecto26;
 public class DataCollector : MonoBehaviour
 {
     public Transform playerTransform;
-    public int skipFrames = 0;
+    public int skipFrames = 1;
 
     public List<DataPoint> data;
     public List<SimplifiedDataPoint> simplifiedData;

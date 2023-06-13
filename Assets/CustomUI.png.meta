@@ -398,7 +398,7 @@ TextureImporter:
         width: 72
         height: 88
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -419,7 +419,7 @@ TextureImporter:
         width: 57
         height: 90
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -440,7 +440,7 @@ TextureImporter:
         width: 86
         height: 91
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -448,6 +448,27 @@ TextureImporter:
       bones: []
       spriteID: 3ac10c88fb4f505498183382297682c3
       internalID: -1106690993
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: W_Key
+      rect:
+        serializedVersion: 2
+        x: 301
+        y: 543
+        width: 60
+        height: 57
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9a5a247d11201df4e8871252b23a77a2
+      internalID: 29151321
       vertices: []
       indices: 
       edges: []
@@ -471,6 +492,7 @@ TextureImporter:
       ButtonPressed: 241151947
       S: 921837573
       Space: 1131817012
+      W_Key: 29151321
       RedButton-High: -1946888776
       Panel: -1369218302
       A: -1067841302

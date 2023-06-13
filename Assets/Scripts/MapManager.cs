@@ -321,6 +321,48 @@ public class MapManager : MonoBehaviour
         }
     }
 
+    public void ShufflePlatforms(float shuffleFac, float hexGridSize)
+    {
+        Random.InitState(0);
+
+        Vector2[] displacementVectors = new Vector2[platforms.Count];
+
+        for (int i = 0; i < platforms.Count; i++)
+        {
+            Vector2 pathDir = Vector2.zero;
+            int count = 0;
+            for (int j = 0; j < platforms.Count; j++)
+            {
+                if (i != j)
+                {
+                    if ((platforms[j].transform.position - platforms[i].transform.position).magnitude < 3.5f * hexGridSize)
+                    {
+                        Vector2 d = new Vector2(platforms[j].transform.position.x - platforms[i].transform.position.x, platforms[j].transform.position.z - platforms[i].transform.position.z);
+                        Vector2 dir = d.normalized;
+
+                        if (j > i) dir *= -1;
+
+                        pathDir += dir;
+                        count++;
+                    }
+                }
+            }
+            if (pathDir.magnitude > 0)
+            {
+                pathDir /= (float)count;
+                Vector3 orthoVector = Vector3.Cross(new Vector3(pathDir.x, 0, pathDir.y), new Vector3(0, 1, 0));
+                displacementVectors[i] = new Vector2(orthoVector.x, orthoVector.z);
+            }
+        }
+
+        for (int i = 0; i < platforms.Count; i++)
+        {
+            GameObject platform = platforms[i];
+            platform.transform.position += (Random.value - 0.5f) * shuffleFac * new Vector3( displacementVectors[i].x,0, displacementVectors[i].y);
+
+        }
+    }
+
     public void PlaceStartEndPlatforms()
     {
         // Trovo le posizioni ideali per le piattaforme
