@@ -21,10 +21,10 @@ MonoBehaviour:
   - scale: 1.2
     position: {x: 0, y: -22.5}
     isSlippery: 0
-  - scale: 1.2000002
+  - scale: 1.2
     position: {x: 3.1176915, y: -20.7}
     isSlippery: 0
-  - scale: 1.1999999
+  - scale: 1.2
     position: {x: 6.235383, y: -18.900002}
     isSlippery: 0
   - scale: 1.2
@@ -33,7 +33,7 @@ MonoBehaviour:
   - scale: 1.2
     position: {x: 12.470766, y: -15.300002}
     isSlippery: 0
-  - scale: 1.2000002
+  - scale: 1.2
     position: {x: 9.353075, y: -13.500002}
     isSlippery: 0
   - scale: 1.2
@@ -42,19 +42,19 @@ MonoBehaviour:
   - scale: 1.2
     position: {x: 3.117692, y: -9.900002}
     isSlippery: 0
-  - scale: 1.1999999
+  - scale: 1.2
     position: {x: 0.00000047683716, y: -8.100001}
     isSlippery: 0
-  - scale: 1.1999999
+  - scale: 1.2
     position: {x: -3.117691, y: -6.300001}
     isSlippery: 0
   - scale: 1.2
     position: {x: -6.2353826, y: -4.500001}
     isSlippery: 0
-  - scale: 1.2000002
+  - scale: 1.2
     position: {x: -3.117691, y: -2.7000008}
     isSlippery: 0
-  - scale: 1.2000002
+  - scale: 1.2
     position: {x: 0.00000047683716, y: -0.9000007}
     isSlippery: 0
   - scale: 1.2
@@ -75,7 +75,7 @@ MonoBehaviour:
   - scale: 1.2
     position: {x: -6.2353826, y: 9.9}
     isSlippery: 0
-  - scale: 1.2000002
+  - scale: 1.2
     position: {x: -9.353074, y: 11.7}
     isSlippery: 0
   - scale: 1.2
@@ -84,51 +84,51 @@ MonoBehaviour:
   - scale: 1.2
     position: {x: -3.117691, y: 15.3}
     isSlippery: 0
-  - scale: 1.2000002
+  - scale: 1.2
     position: {x: 0.00000047683716, y: 17.1}
     isSlippery: 0
   - scale: 1.2
     position: {x: 3.117692, y: 18.9}
     isSlippery: 0
-  - scale: 1.2000002
+  - scale: 1.2
     position: {x: 6.2353835, y: 20.699999}
     isSlippery: 0
   - scale: 1.2
     position: {x: 9.353075, y: 22.499998}
     isSlippery: 0
-  - scale: 0.8399999
+  - scale: 0.8
     position: {x: -3.1176915, y: -20.7}
     isSlippery: 0
-  - scale: 0.84000003
+  - scale: 0.8
     position: {x: -3.1176915, y: -17.1}
     isSlippery: 0
-  - scale: 0.8400001
+  - scale: 0.8
     position: {x: -3.1176915, y: -13.5}
     isSlippery: 0
-  - scale: 0.84000003
+  - scale: 0.8
     position: {x: -3.1176915, y: -9.9}
     isSlippery: 0
-  - scale: 0.84000003
+  - scale: 0.8
     position: {x: 3.117692, y: -6.300001}
     isSlippery: 0
-  - scale: 0.84000003
+  - scale: 0.8
     position: {x: 6.2353835, y: -4.500001}
     isSlippery: 0
-  - scale: 0.84000003
+  - scale: 0.8
     position: {x: 6.2353835, y: -0.9000008}
     isSlippery: 0
-  - scale: 0.8400001
+  - scale: 0.8
     position: {x: 9.353075, y: 0.89999926}
     isSlippery: 0
-  - scale: 0.84000015
+  - scale: 0.8
     position: {x: 6.2353835, y: 6.299999}
     isSlippery: 0
-  - scale: 0.84000003
+  - scale: 0.8
     position: {x: 6.2353835, y: 9.9}
     isSlippery: 0
-  - scale: 0.84000003
+  - scale: 0.8
     position: {x: 6.2353835, y: 13.5}
     isSlippery: 0
-  - scale: 0.84000003
+  - scale: 0.8
     position: {x: 6.2353835, y: 17.1}
     isSlippery: 0

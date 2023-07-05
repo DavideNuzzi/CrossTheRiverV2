@@ -16,21 +16,21 @@ MonoBehaviour:
   shortDescription: 
   isTraining: 0
   returnFirstRock: 0
-  maxTime: 85
+  maxTime: 80
   platformInfo:
-  - scale: 1.2000002
+  - scale: 1.2
     position: {x: -0, y: -22.5}
     isSlippery: 0
   - scale: 1.2
     position: {x: 3.1176915, y: -20.7}
     isSlippery: 0
-  - scale: 1.2000002
+  - scale: 1.2
     position: {x: 6.235383, y: -18.900002}
     isSlippery: 0
-  - scale: 1.1999999
+  - scale: 1.2
     position: {x: 9.353075, y: -17.100002}
     isSlippery: 0
-  - scale: 1.2000002
+  - scale: 1.2
     position: {x: 12.470766, y: -15.300002}
     isSlippery: 0
   - scale: 1.2
@@ -42,7 +42,7 @@ MonoBehaviour:
   - scale: 1.2
     position: {x: 9.353075, y: -9.900002}
     isSlippery: 0
-  - scale: 1.2000002
+  - scale: 1.2
     position: {x: 6.2353835, y: -8.100001}
     isSlippery: 0
   - scale: 1.2
@@ -57,99 +57,99 @@ MonoBehaviour:
   - scale: 1.2
     position: {x: -6.2353826, y: -0.9000007}
     isSlippery: 0
-  - scale: 1.2000003
+  - scale: 1.2
     position: {x: -9.353074, y: 0.8999994}
     isSlippery: 0
-  - scale: 1.1999999
+  - scale: 1.2
     position: {x: -6.2353826, y: 2.6999993}
     isSlippery: 0
-  - scale: 1.2000002
+  - scale: 1.2
     position: {x: -3.117691, y: 4.4999995}
     isSlippery: 0
-  - scale: 1.2000002
+  - scale: 1.2
     position: {x: 0.00000047683716, y: 6.2999997}
     isSlippery: 0
-  - scale: 1.1999999
+  - scale: 1.2
     position: {x: 3.117692, y: 8.099999}
     isSlippery: 0
-  - scale: 1.2000002
+  - scale: 1.2
     position: {x: 6.2353835, y: 9.9}
     isSlippery: 0
-  - scale: 1.1999999
+  - scale: 1.2
     position: {x: 9.353075, y: 11.7}
     isSlippery: 0
   - scale: 1.2
     position: {x: 12.470766, y: 13.5}
     isSlippery: 0
-  - scale: 1.1999999
+  - scale: 1.2
     position: {x: 15.588457, y: 15.3}
     isSlippery: 0
-  - scale: 1.2000003
+  - scale: 1.2
     position: {x: 12.470766, y: 17.1}
     isSlippery: 0
-  - scale: 1.2000002
+  - scale: 1.2
     position: {x: 9.353075, y: 18.9}
     isSlippery: 0
-  - scale: 1.1999999
+  - scale: 1.2
     position: {x: 6.2353835, y: 20.699999}
     isSlippery: 0
   - scale: 1.2
     position: {x: 3.117692, y: 22.499998}
     isSlippery: 0
-  - scale: 0.84000003
+  - scale: 0.8
     position: {x: 6.2353835, y: -4.500001}
     isSlippery: 0
-  - scale: 0.84000015
+  - scale: 0.8
     position: {x: 3.117692, y: -2.7000008}
     isSlippery: 0
-  - scale: 0.84000003
+  - scale: 0.8
     position: {x: 3.117692, y: 0.8999994}
     isSlippery: 0
-  - scale: 0.84
+  - scale: 0.8
     position: {x: 0.00000047683716, y: 2.6999993}
     isSlippery: 0
-  - scale: 0.8400001
+  - scale: 0.8
     position: {x: 9.353075, y: -6.300001}
     isSlippery: 0
-  - scale: 0.84000015
+  - scale: 0.8
     position: {x: 9.353075, y: -2.700001}
     isSlippery: 0
-  - scale: 0.84000003
+  - scale: 0.8
     position: {x: 9.353075, y: 0.89999914}
     isSlippery: 0
-  - scale: 0.8400001
+  - scale: 0.8
     position: {x: 9.353075, y: 4.499999}
     isSlippery: 0
-  - scale: 0.84000003
+  - scale: 0.8
     position: {x: 9.353075, y: 8.099999}
     isSlippery: 0
-  - scale: 0.84
+  - scale: 0.8
     position: {x: 12.470766, y: 9.9}
     isSlippery: 0
-  - scale: 0.84000003
+  - scale: 0.8
     position: {x: 6.235383, y: -15.300001}
     isSlippery: 0
-  - scale: 0.84000003
+  - scale: 0.8
     position: {x: 3.1176915, y: -13.500001}
     isSlippery: 0
-  - scale: 0.8400001
+  - scale: 0.8
     position: {x: 3.1176915, y: -9.900001}
     isSlippery: 0
-  - scale: 0.84
+  - scale: 0.8
     position: {x: 15.588457, y: -9.900002}
     isSlippery: 0
-  - scale: 0.84000003
+  - scale: 0.8
     position: {x: 15.588457, y: -6.300001}
     isSlippery: 0
-  - scale: 0.84000003
+  - scale: 0.8
     position: {x: 15.588457, y: -2.700001}
     isSlippery: 0
-  - scale: 0.84000003
+  - scale: 0.8
     position: {x: 15.588457, y: 0.89999914}
     isSlippery: 0
-  - scale: 0.8400002
+  - scale: 0.8
     position: {x: 15.588457, y: 4.499999}
     isSlippery: 0
-  - scale: 0.84000003
+  - scale: 0.8
     position: {x: 15.588457, y: 8.099999}
     isSlippery: 0

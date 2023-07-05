@@ -16,7 +16,7 @@ MonoBehaviour:
   shortDescription: 
   isTraining: 1
   returnFirstRock: 0
-  maxTime: 75
+  maxTime: 80
   platformInfo:
   - scale: 1.2
     position: {x: 0, y: -17.5}
@@ -36,16 +36,16 @@ MonoBehaviour:
   - scale: 1.2
     position: {x: 3.117692, y: -8.499999}
     isSlippery: 0
-  - scale: 1.2000002
+  - scale: 1.2
     position: {x: 0.00000047683716, y: -6.699999}
     isSlippery: 0
-  - scale: 1.2000002
+  - scale: 1.2
     position: {x: 3.117692, y: -4.8999987}
     isSlippery: 0
-  - scale: 1.1999999
+  - scale: 1.2
     position: {x: 6.2353835, y: -3.0999985}
     isSlippery: 0
-  - scale: 1.1999999
+  - scale: 1.2
     position: {x: 9.353075, y: -1.2999984}
     isSlippery: 0
   - scale: 1.2
@@ -69,7 +69,7 @@ MonoBehaviour:
   - scale: 1.2
     position: {x: 6.2353835, y: 11.300002}
     isSlippery: 0
-  - scale: 1.1999998
+  - scale: 1.2
     position: {x: 3.117692, y: 13.100002}
     isSlippery: 0
   - scale: 1.2

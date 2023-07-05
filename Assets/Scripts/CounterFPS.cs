@@ -13,6 +13,10 @@ public class CounterFPS : MonoBehaviour
     float timeleft;
     public float fps;
 
+    public int totalFrames;
+    public float totalFps;
+    public float averageFps;
+
     GUIStyle textStyle = new GUIStyle();
 
     // Use this for initialization
@@ -20,8 +24,8 @@ public class CounterFPS : MonoBehaviour
     {
         timeleft = updateInterval;
 
-        textStyle.fontStyle = FontStyle.Bold;
-        textStyle.normal.textColor = Color.white;
+    //    textStyle.fontStyle = FontStyle.Bold;
+    //    textStyle.normal.textColor = Color.white;
     }
 
     // Update is called once per frame
@@ -40,6 +44,11 @@ public class CounterFPS : MonoBehaviour
             accum = 0.0f;
             frames = 0;
         }
+
+        ++totalFrames;
+        totalFps += fps;
+        averageFps = totalFps / (float)totalFrames;
+      //  Debug.Log(averageFps);
     }
 /*
     void OnGUI()

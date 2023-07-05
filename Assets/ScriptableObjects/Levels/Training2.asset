@@ -16,7 +16,7 @@ MonoBehaviour:
   shortDescription: 
   isTraining: 1
   returnFirstRock: 0
-  maxTime: 60
+  maxTime: 80
   platformInfo:
   - scale: 1.2
     position: {x: 0, y: -18}
@@ -42,7 +42,7 @@ MonoBehaviour:
   - scale: 1.2
     position: {x: 21.82384, y: -5.3999996}
     isSlippery: 0
-  - scale: 1.2000002
+  - scale: 1.2
     position: {x: 24.94153, y: -3.5999994}
     isSlippery: 0
   - scale: 1.2
@@ -54,10 +54,10 @@ MonoBehaviour:
   - scale: 1.2
     position: {x: 28.059221, y: 1.8000008}
     isSlippery: 0
-  - scale: 1.2000002
+  - scale: 1.2
     position: {x: 24.94153, y: 3.6000009}
     isSlippery: 0
-  - scale: 1.2000002
+  - scale: 1.2
     position: {x: 21.82384, y: 5.400001}
     isSlippery: 0
   - scale: 1.2
@@ -66,7 +66,7 @@ MonoBehaviour:
   - scale: 1.2
     position: {x: 15.588457, y: 9.000001}
     isSlippery: 0
-  - scale: 1.1999999
+  - scale: 1.2
     position: {x: 12.470766, y: 10.800001}
     isSlippery: 0
   - scale: 1.2
@@ -81,48 +81,48 @@ MonoBehaviour:
   - scale: 1.2
     position: {x: 0.00000047683716, y: 18}
     isSlippery: 0
-  - scale: 0.84000003
+  - scale: 0.8
     position: {x: 12.470766, y: -7.2}
     isSlippery: 0
-  - scale: 0.8400001
+  - scale: 0.8
     position: {x: 12.470766, y: -3.5999997}
     isSlippery: 0
-  - scale: 0.84000003
+  - scale: 0.8
     position: {x: 12.470766, y: 0.00000047683716}
     isSlippery: 0
-  - scale: 0.84000003
+  - scale: 0.8
     position: {x: 9.353075, y: 1.8000005}
     isSlippery: 0
-  - scale: 0.84
+  - scale: 0.8
     position: {x: 12.470766, y: 3.6000006}
     isSlippery: 0
-  - scale: 0.84000015
+  - scale: 0.8
     position: {x: 12.470766, y: 7.200001}
     isSlippery: 0
-  - scale: 0.84000003
+  - scale: 0.8
     position: {x: 3.1176915, y: -12.6}
     isSlippery: 0
-  - scale: 0.84000003
+  - scale: 0.8
     position: {x: 3.1176915, y: -9}
     isSlippery: 0
-  - scale: 0.84000015
+  - scale: 0.8
     position: {x: 3.1176915, y: -5.3999996}
     isSlippery: 0
-  - scale: 0.84000003
+  - scale: 0.8
     position: {x: 3.1176915, y: -1.7999995}
     isSlippery: 0
-  - scale: 0.84000003
+  - scale: 0.8
     position: {x: 0, y: 0.00000059604645}
     isSlippery: 0
-  - scale: 0.84000003
+  - scale: 0.8
     position: {x: 3.1176915, y: 1.8000007}
     isSlippery: 0
-  - scale: 0.84000015
+  - scale: 0.8
     position: {x: 3.1176915, y: 5.4000006}
     isSlippery: 0
-  - scale: 0.84000003
+  - scale: 0.8
     position: {x: 3.1176915, y: 9.000001}
     isSlippery: 0
-  - scale: 0.84
+  - scale: 0.8
     position: {x: 3.1176915, y: 12.600001}
     isSlippery: 0

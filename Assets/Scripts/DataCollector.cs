@@ -50,7 +50,8 @@ public class DataCollector : MonoBehaviour
         {   
             if (frame >= skipFrames)
             {
-                DataPoint point = new DataPoint() {position = playerTransform.position, 
+                DataPoint point = new DataPoint() {
+                    position = playerTransform.position, 
                     direction = playerTransform.forward,
                     time = time };
                 data.Add(point);

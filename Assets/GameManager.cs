@@ -11,6 +11,8 @@ using UnityEngine.Rendering.PostProcessing;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using System.Linq;
+using System.Globalization;
+using System.Runtime.InteropServices;
 
 public class GameManager : MonoBehaviour
 {
@@ -46,6 +48,7 @@ public class GameManager : MonoBehaviour
     public bool resetFirstStone = false;
 
     public Animator characterAnimator;
+    public bool levelLoading;
 
     int globalLevelCounter = 0;
 
@@ -58,11 +61,16 @@ public class GameManager : MonoBehaviour
     private float levelScore = 0;
     private float levelMaxTime = 0;
 
-    private int starsCollected = 0;
+    public int starsCollected = 0;
 
     public bool levelRunning = false;
     string currentLevelName = "";
     int penaltyNum = 0;
+
+    public float totalExperimentTime = 0f;
+
+
+    public CounterFPS fpsCounter;
 
 
 
@@ -74,6 +82,16 @@ public class GameManager : MonoBehaviour
 
 
     public DataCollector dataCollector;
+
+
+
+#if UNITY_WEBGL
+
+    [DllImport("__Internal")]
+    private static extern string ReturnUserAgent();
+
+#endif
+
 
 
     public static GameManager Instance
@@ -89,6 +107,7 @@ public class GameManager : MonoBehaviour
     {
         //Application.targetFrameRate = 40;
 
+        Application.runInBackground = false;
 
         // Voglio che il game-manager rimanga in ogni livello
         DontDestroyOnLoad(this.gameObject);
@@ -99,6 +118,8 @@ public class GameManager : MonoBehaviour
 
     public void NextScene()
     {
+        if (levelLoading) return;
+
         // Se la scena attuale è il livello di un blocco, devo passare al livello successivo
         if (currentScene >= 0)
         {
@@ -146,7 +167,7 @@ public class GameManager : MonoBehaviour
             currentBlockIndices = new List<int>();
             for (int i = 0; i < block.levels.Count; i++) currentBlockIndices.Add(i);
 
-            System.Random rnd = new System.Random(currentScene);
+            System.Random rnd = new System.Random();
 
             if (block.randomize) currentBlockIndices = currentBlockIndices.OrderBy(x => rnd.Next()).ToList();
 
@@ -163,6 +184,7 @@ public class GameManager : MonoBehaviour
     public IEnumerator LoadTutorialScene(TutorialMenu tutorial)
     {
         // QUI DEVO BLOCCARE IL VECCHIO PULSANTE DEL TUTORIAL!!!!!
+        levelLoading = true;
 
 
 
@@ -182,14 +204,17 @@ public class GameManager : MonoBehaviour
         Instantiate(tutorial.guiPrefab);
         Debug.Log("UI creata");
         yield return null;
+        levelLoading = false;
+
     }
 
     public IEnumerator LoadLevelScene(Level level)
     {
+        levelLoading = true;
         levelRunning = false;
         isTrainingLevel = level.isTraining;
         resettingLevel = false;
-
+            
         AsyncOperation asyncLoading = SceneManager.LoadSceneAsync("LevelScene", LoadSceneMode.Single);
         Debug.Log("Inizio a caricare il livello: "+level.name);
         currentLevelName = level.name;
@@ -213,8 +238,9 @@ public class GameManager : MonoBehaviour
   //      timerUI = GameObject.Find("Timer").GetComponent<TMP_Text>();
   //      scoreUI = GameObject.Find("Score").GetComponent<TMP_Text>();
         starsCollectedUI = GameObject.Find("StarsText").GetComponent<TMP_Text>();
+        fpsCounter = GameManager.FindObjectOfType<CounterFPS>();
 
-      //  penaltiesUI = GameObject.Find("Penalty").GetComponent<TMP_Text>();
+        //  penaltiesUI = GameObject.Find("Penalty").GetComponent<TMP_Text>();
         winTextUI = GameObject.Find("WinText").GetComponent<TMP_Text>();
         levelNameUI = GameObject.Find("LevelName").GetComponent<TMP_Text>();
         starScoreImage = GameObject.Find("StarsFiller").GetComponent<Image>();
@@ -307,6 +333,8 @@ public class GameManager : MonoBehaviour
         dataCollector.isCollecting = true;
 
         timerRoutine = StartCoroutine(GameTimer());
+
+        levelLoading = false;
 
         globalLevelCounter++;
 
@@ -411,6 +439,13 @@ public class GameManager : MonoBehaviour
 
                 }
             }
+            else
+            {
+                if (timerIncreasing > 180)
+                {
+                    dataCollector.isCollecting = false;
+                }
+            }
             yield return null;
 
         }
@@ -496,7 +531,9 @@ public class GameManager : MonoBehaviour
         dataCollector.isCollecting = false;
 
         if (timerRoutine != null) StopCoroutine(timerRoutine);
-  //      StopCoroutine(GameTimer());
+        //      StopCoroutine(GameTimer());
+
+        totalExperimentTime += timerIncreasing;
 
         // Salvo sul server
         SaveLevelData();
@@ -581,6 +618,7 @@ public class GameManager : MonoBehaviour
         // Aggiungo un ultimo punto
         dataCollector.AddSimplifiedPoint(characterController.transform.position, 4);
 
+        totalExperimentTime += timerIncreasing;
 
         // Salvo sul server
         SaveLevelData();
@@ -667,13 +705,20 @@ public class GameManager : MonoBehaviour
     {
         // Creo una cartella sul server per questo utente
         //     string json = JsonHelper.ArrayToJsonString(dataCollector.data.ToArray(), true);
+        string userAgent = "unknown";
+
+#if UNITY_WEBGL
+
+        userAgent = ReturnUserAgent();
+#endif
 
         playerInfo = new PlayerInfo()
         {
             username = playerName,
             gender = gender,
             age = age,
-            randomSeed = UnityEngine.Random.Range(0, 10000).ToString("D5")
+            randomSeed = UnityEngine.Random.Range(0, 10000).ToString("D5"),
+            userAgent = userAgent
         };
 
         string infoString = JsonUtility.ToJson(playerInfo, true);
@@ -710,6 +755,16 @@ public class GameManager : MonoBehaviour
         .Catch(err => Debug.LogError(err.Message));
     }
 
+    public void SaveFinalData(ExperimentResults results)
+    {
+
+        string json = JsonUtility.ToJson(results, true);
+
+        RestClient.Put<RunData>(databaseURL + playerInfo.username + "_" + playerInfo.randomSeed + "/FinalResults.json", json)
+        .Then(res => { Debug.Log("Successo!"); })
+        .Catch(err => Debug.LogError(err.Message));
+    }
+
     void PostRun(string userID)
     {
 
@@ -730,28 +785,29 @@ public class GameManager : MonoBehaviour
 
         for (int i = 0; i < runData.data.Length; i++)
         {
-            string posStr = runData.data[i].position.x.ToString("F2") + "," + runData.data[i].position.y.ToString("F2") + "," + runData.data[i].position.z.ToString("F2");
+            string posStr = runData.data[i].position.x.ToString("F2", CultureInfo.InvariantCulture) + ";" + runData.data[i].position.y.ToString("F2", CultureInfo.InvariantCulture) + ";" + runData.data[i].position.z.ToString("F2", CultureInfo.InvariantCulture);
 
             float angleDir = Mathf.Atan2(runData.data[i].direction.z, runData.data[i].direction.x);
-            string angleDirStr = angleDir.ToString("F2");
-            string timeStr = runData.data[i].time.ToString("F3");
+            string angleDirStr = angleDir.ToString("F2", CultureInfo.InvariantCulture);
+            string timeStr = runData.data[i].time.ToString("F3", CultureInfo.InvariantCulture);
 
-            dataString[i] = timeStr + "," + posStr + "," + angleDirStr;
+            dataString[i] = timeStr + ";" + posStr + ";" + angleDirStr;
         }
 
         for (int i = 0; i < runData.simplifiedData.Length; i++)
         {
-            string timeStr = runData.simplifiedData[i].time.ToString("F3");
-            string posStr = runData.simplifiedData[i].position.x.ToString("F2") + "," + runData.simplifiedData[i].position.z.ToString("F2");
+            string timeStr = runData.simplifiedData[i].time.ToString("F3", CultureInfo.InvariantCulture);
+            string posStr = runData.simplifiedData[i].position.x.ToString("F2", CultureInfo.InvariantCulture) + ";" + runData.simplifiedData[i].position.z.ToString("F2", CultureInfo.InvariantCulture);
             string typeStr = runData.simplifiedData[i].type.ToString();
 
-            eventsString[i] = timeStr + "," + posStr + "," + typeStr;
+            eventsString[i] = timeStr + ";" + posStr + ";" + typeStr;
         }
 
         runDataString.levelOrder = runData.levelOrder;
         runDataString.levelName = runData.levelName;
         runDataString.data = dataString;
         runDataString.events = eventsString;
+        runDataString.averageFPS = fpsCounter.averageFps.ToString("F2", CultureInfo.InvariantCulture);
 
         return runDataString;
     }
@@ -763,6 +819,7 @@ public class GameManager : MonoBehaviour
         public string gender;
         public string age;
         public string randomSeed;
+        public string userAgent;
     }
 
 
@@ -773,6 +830,7 @@ public class GameManager : MonoBehaviour
         public SimplifiedDataPoint[] simplifiedData;
         public string levelName;
         public int levelOrder;
+        public float averageFPS;
     }
 
 
@@ -784,6 +842,7 @@ public class GameManager : MonoBehaviour
         public int levelOrder;
         public string[] data;
         public string[] events;
+        public string averageFPS;
     }
 
 
@@ -837,7 +896,15 @@ public class GameManager : MonoBehaviour
     {
         if (dataCollector) dataCollector.time = timerIncreasing;
 
+        /*
+        if (Input.GetKey(KeyCode.P))
+        {
+            TutorialMenu level = (TutorialMenu)gameScenes[gameScenes.Count - 1];
+            StartCoroutine(LoadTutorialScene(level));
+        }
+        */
     }
+
     /*
     private IEnumerator StartGameCoroutine()
     {
