@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.29910928, g: 0.47372687, b: 0.46817967, a: 1}
+  m_IndirectSpecularColor: {r: 0.5753255, g: 0.71050286, b: 0.7041725, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -6418,6 +6418,15 @@ MonoBehaviour:
     position: {x: -1.1558945, y: 9.162056}
     isSlippery: 0
   shortestPath: []
+  shortestPathShortcut: []
+  shortestPathNoShortcut: []
+  sameQuadrantShortcut: 0
+  sameQuadrantNoShortcut: 0
+  pathVecShortcut: {x: 0, y: 0}
+  pathVecNoShortcut: {x: 0, y: 0}
+  goalVec: {x: 0, y: 0}
+  angleShortcut: 0
+  angleNoShortcut: 0
   levelToLoad: {fileID: 0}
   levelSaveFilename: 
 --- !u!4 &229072202
@@ -7586,22 +7595,25 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gameScenes:
+  - {fileID: 11400000, guid: 64ccc766dec5b7349b1c23d500316cc9, type: 2}
   - {fileID: 11400000, guid: 7015cc12db412a04ab9655c3968a2dfd, type: 2}
   - {fileID: 11400000, guid: ddf89420a14f398408482fafd9c7aa4f, type: 2}
   - {fileID: 11400000, guid: ac8a67ebacdd8f945a51be2568c1574c, type: 2}
   - {fileID: 11400000, guid: 7b0dc538fcd385e4f9d299b578207d21, type: 2}
   - {fileID: 11400000, guid: 172b034d204ab8140a221ac1cbbdbf3c, type: 2}
   - {fileID: 11400000, guid: 8c379256d93f4eb4283e78e86e85fe97, type: 2}
-  - {fileID: 11400000, guid: cd2d0276c79d5f940806ef6549e8896e, type: 2}
+  - {fileID: 11400000, guid: 20c376165f9db0a499f4803853554e8a, type: 2}
   - {fileID: 11400000, guid: 29d89d7b4f72cba49805bffa96d96158, type: 2}
   coinSound: {fileID: 1540928970154281486, guid: f73f8c2f406a24140a0a321cac3b0d9e, type: 3}
   penaltySound: {fileID: 6820562089335813555, guid: 7828dd4194227894bb64f7d31b7532d3, type: 3}
   resetFirstStone: 0
   characterAnimator: {fileID: 0}
+  levelLoading: 0
   resettingLevel: 0
   starsCollected: 0
   levelRunning: 0
   totalExperimentTime: 0
+  fpsCounter: {fileID: 0}
   dataCollector: {fileID: 0}
 --- !u!4 &273247669
 Transform:
@@ -15323,6 +15335,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   updateInterval: 0.5
   fps: 0
+  totalFrames: 0
+  totalFps: 0
+  averageFps: 0
 --- !u!1 &539186843
 GameObject:
   m_ObjectHideFlags: 0
@@ -19635,8 +19650,8 @@ Light:
   serializedVersion: 10
   m_Type: 1
   m_Shape: 0
-  m_Color: {r: 1, g: 0.7102837, b: 0.2971698, a: 1}
-  m_Intensity: 1.53
+  m_Color: {r: 1, g: 0.64704335, b: 0.1462264, a: 1}
+  m_Intensity: 1.03
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
@@ -26799,6 +26814,52 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 991299836}
   m_Mesh: {fileID: 8314571269056883277, guid: d3ed6d20a620ebe4095956ea0174ac6b, type: 3}
+--- !u!1 &993894999
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 993895001}
+  - component: {fileID: 993895000}
+  m_Layer: 0
+  m_Name: ExportMaps
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &993895000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 993894999}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a73c7163c561ab4b8f230e757866ac8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gameScenes:
+  - {fileID: 11400000, guid: 20c376165f9db0a499f4803853554e8a, type: 2}
+--- !u!4 &993895001
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 993894999}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 152.48744, y: -224.2614, z: 279.32187}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 9
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &994578191
 GameObject:
   m_ObjectHideFlags: 0
@@ -34377,7 +34438,7 @@ GameObject:
   - component: {fileID: 1239533732}
   - component: {fileID: 1239533731}
   m_Layer: 0
-  m_Name: CorrectMapErrors
+  m_Name: UpdateAllMaps
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -34396,10 +34457,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gameScenes:
-  - {fileID: 11400000, guid: 7b0dc538fcd385e4f9d299b578207d21, type: 2}
-  - {fileID: 11400000, guid: 172b034d204ab8140a221ac1cbbdbf3c, type: 2}
-  - {fileID: 11400000, guid: 8c379256d93f4eb4283e78e86e85fe97, type: 2}
-  - {fileID: 11400000, guid: cd2d0276c79d5f940806ef6549e8896e, type: 2}
+  - {fileID: 11400000, guid: 20c376165f9db0a499f4803853554e8a, type: 2}
   smallPlatformScale: 0.8
   bigPlatformScale: 1.2
   scaleTreshold: 0.9
@@ -58806,7 +58864,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Username
+  m_text: Prolific ID
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: a4ba6b7138efc4543aa797242d6b1a81, type: 2}
   m_sharedMaterial: {fileID: -6828752847275660733, guid: a4ba6b7138efc4543aa797242d6b1a81, type: 2}

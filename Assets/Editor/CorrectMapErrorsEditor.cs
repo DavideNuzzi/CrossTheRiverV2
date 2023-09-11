@@ -22,5 +22,11 @@ public class CorrectMapErrorsEditor : Editor
             correctionScript.ChangeLevelTime();
 
         }
+
+        if (GUILayout.Button("Salva versione flippata"))
+        {
+            correctionScript.SaveFlippedMaps();
+
+        }
     }
 }

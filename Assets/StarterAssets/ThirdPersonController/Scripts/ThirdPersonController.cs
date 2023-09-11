@@ -208,6 +208,7 @@ namespace StarterAssets
             {
                 //Don't multiply mouse input by Time.deltaTime;
                 float deltaTimeMultiplier = IsCurrentDeviceMouse ? 1.0f : Time.deltaTime;
+                deltaTimeMultiplier = 1.0f;
 
                 _cinemachineTargetYaw += _input.look.x * deltaTimeMultiplier;
                 _cinemachineTargetPitch += _input.look.y * deltaTimeMultiplier;
@@ -307,7 +308,7 @@ namespace StarterAssets
 
         private void JumpAndGravity()
         {
-            if (badControls) LockCameraPosition = false;
+           // if (badControls) LockCameraPosition = false;
 
             if (Grounded)
             {
@@ -349,7 +350,7 @@ namespace StarterAssets
             else
             {
                 // RENDO IMPOSSIBILE RUOTARE LA TELECAMERA MENTRE SI E' IN ARIA
-                if (badControls) LockCameraPosition = true;
+               // if (badControls) LockCameraPosition = true;
 
 
                 // reset the jump timeout timer

@@ -42,6 +42,7 @@ public class GameManager : MonoBehaviour
     private TMP_Text levelNameUI;
     private TMP_Text starsCollectedUI;
 
+    private Image backgroundImage;
     private Image starScoreImage;
     private GameObject starsContainer;
 
@@ -77,10 +78,11 @@ public class GameManager : MonoBehaviour
     private PlayerInfo playerInfo;
 
     // Per il salvataggio dei dati
-    private const string projectId = "cross-the-river-9b5e2";
-    private static readonly string databaseURL = "https://cross-the-river-9b5e2-default-rtdb.europe-west1.firebasedatabase.app/";
+  //  private const string projectId = "cross-the-river-9b5e2";
+  //  private static readonly string databaseURL = "https://cross-the-river-9b5e2-default-rtdb.europe-west1.firebasedatabase.app/";
+    private static readonly string databaseURL = "https://crosstheriverpilot-default-rtdb.europe-west1.firebasedatabase.app/";
 
-
+    
     public DataCollector dataCollector;
 
 
@@ -244,6 +246,7 @@ public class GameManager : MonoBehaviour
         winTextUI = GameObject.Find("WinText").GetComponent<TMP_Text>();
         levelNameUI = GameObject.Find("LevelName").GetComponent<TMP_Text>();
         starScoreImage = GameObject.Find("StarsFiller").GetComponent<Image>();
+        backgroundImage = GameObject.Find("Background").GetComponent<Image>();
         starsContainer = GameObject.Find("StarsContainer");
 
         characterAnimator = characterController.gameObject.GetComponent<Animator>();
@@ -565,7 +568,7 @@ public class GameManager : MonoBehaviour
     public IEnumerator CalculateStarScore()
     {
         // Sposto il contenitore delle stelle
-        yield return StartCoroutine(MoveUI(starsContainer.GetComponent<RectTransform>(), new Vector2(0, -165)));
+        yield return StartCoroutine(MoveUI(starsContainer.GetComponent<RectTransform>(), new Vector2(Screen.width/2f + 50f, -165)));
 
         // Approssimo al numero di stelle reali
         int starsCollectedLevel = Mathf.CeilToInt(levelScore * 3);
@@ -581,7 +584,7 @@ public class GameManager : MonoBehaviour
 
         // Aggiungo al punteggio totale di stelle
         StartCoroutine(ScaleBounceUI(starsContainer.GetComponent<RectTransform>(), 0.3f,1f));
-        StartCoroutine(MoveUI(starsContainer.GetComponent<RectTransform>(), new Vector2(540, -50)));
+        StartCoroutine(MoveUI(starsContainer.GetComponent<RectTransform>(), new Vector2(Screen.width, -50)));
         yield return new WaitForSeconds(0.4f);
         starsContainer.SetActive(false);
 
@@ -877,24 +880,34 @@ public class GameManager : MonoBehaviour
         DepthOfField dof = postProcessVolume.profile.GetSetting<DepthOfField>();
         while (dof.focusDistance.value < 100f)
         {
+            backgroundImage.color = new Color(backgroundImage.color.r, backgroundImage.color.g, backgroundImage.color.b, backgroundImage.color.a * 0.9f);
             dof.focusDistance.value *= 1.1f;
             yield return null;
         }
+        backgroundImage.color = new Color(0,0,0,0);
+
     }
     public IEnumerator AddBlur()
     {
 
         DepthOfField dof = postProcessVolume.profile.GetSetting<DepthOfField>();
-        while (dof.focusDistance.value > 0.1f)
+
+        while (dof.focusDistance.value > 0.01f)
         {
+         //   backgroundImage.color = new Color(backgroundImage.color.r, backgroundImage.color.g, backgroundImage.color.b, backgroundImage.color.a * 1.1f);
             dof.focusDistance.value *= 0.9f;
             yield return null;
         }
+       // backgroundImage.color = new Color(0, 0, 0, 0);
+
     }
 
     private void Update()
     {
         if (dataCollector) dataCollector.time = timerIncreasing;
+
+      //  if (Input.GetKey(KeyCode.P)) NextScene();
+
 
         /*
         if (Input.GetKey(KeyCode.P))

@@ -34,8 +34,6 @@ public class CorrectMapErrors : MonoBehaviour
                 Level level = (Level) scene;
                 EditorUtility.SetDirty(level);
                 ChangePlatformSizesLevel(level);
-
-
             }
 
         }
@@ -79,6 +77,45 @@ public class CorrectMapErrors : MonoBehaviour
             else
             {
                 info.scale = bigPlatformScale;
+            }
+        }
+    }
+
+    public void SaveFlippedMaps()
+    {
+        foreach (GameScene scene in gameScenes)
+        {
+            if (scene.GetType() == typeof(Block))
+            {
+                Block block = (Block)scene;
+                foreach (Level level in block.levels)
+                {
+                    // Prendo le informazioni del livello
+                    List<PlatformInfo> platformInfo = level.platformInfo;
+                    string filename = level.sceneName;
+
+                    // Inizio a creare lo scriptable object flippato
+                    string path = "Assets/ScriptableObjects/Levels/New/" + filename + "_f.asset";
+
+                    List<PlatformInfo> flippedPlatforms = new List<PlatformInfo>();
+                    for (int i = 0; i < platformInfo.Count; i++)
+                    {
+                        flippedPlatforms.Add(new PlatformInfo()
+                        {
+                            position = new Vector2(-platformInfo[i].position.x, platformInfo[i].position.y),
+                            isSlippery = false,
+                            scale = platformInfo[i].scale
+                        });
+                    }
+
+                    Level levelNew = ScriptableObject.CreateInstance<Level>();
+                    levelNew.sceneName = filename;
+                    levelNew.platformInfo = flippedPlatforms;
+                    levelNew.maxTime = level.maxTime;
+
+                    // Salvo
+                    AssetDatabase.CreateAsset(levelNew, path);
+                }
             }
         }
     }

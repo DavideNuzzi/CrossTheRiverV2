@@ -50,7 +50,10 @@ public class MapManagerEditor : Editor
             mapManager.ShortestPath();
             Debug.Log("Shortest path length = " + mapManager.shortestPath.Count);
         }
-
+        if (GUILayout.Button("Shuffle platforms"))
+        {
+            mapManager.ShufflePlatforms(2f, 1.2f);
+        }
 
     }
 

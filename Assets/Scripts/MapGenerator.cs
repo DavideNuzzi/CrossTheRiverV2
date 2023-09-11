@@ -70,7 +70,23 @@ public class MapGenerator : MonoBehaviour
     [HideInInspector]
     public float platformScaleHexLarge = 1.1f;
 
-    
+    [HideInInspector]
+    public bool shortcutIsShorter = false;
+    [HideInInspector]
+    public bool shortcutSameQuadrant = false;
+    [HideInInspector]
+    public float angleSmallThreshold = 30f;
+    [HideInInspector]
+    public float angleLargeThreshold = 50f;
+
+
+
+    [HideInInspector]
+    public int jumpDifference = 2;
+
+    [HideInInspector]
+    public float discountFactor = 0.9f;
+
 
     /*
     public void SaveMapAsset(string filename)
@@ -102,8 +118,8 @@ public class MapGenerator : MonoBehaviour
 
         mapSize = hexParams.mapSize;
 
-        float scaleBig = 1.1f;
-        float scaleSmall = 0.7f;
+        float scaleBig = 1.2f;
+        float scaleSmall = 0.8f;
         float s = 1.3f;
 
         // Genero un percorso con piattaforme "grandi" ma tortuoso
@@ -449,13 +465,40 @@ public class MapGenerator : MonoBehaviour
         // Il path continua in verticale finché non trova una nuova roccia a "distanza"
         int pathsAdded = 0;
 
-        for (int n = 0; n < 500; n++)
+        List<PlatformInfo> pathStartPlatforms = new List<PlatformInfo>();
+
+        for (int n = 0; n < 5000; n++)
         {
             PlatformInfo randomPlatformStart = platformInfo[Random.Range(0, platformInfo.Count)];
             List<PlatformInfo> possiblePath = new List<PlatformInfo>();
             bool pathValid = true;
 
+            // Se provo ad attaccarmi a una piattaforma piccola, ricomincio
             if (randomPlatformStart.scale < hexParams.platformScale) continue;
+
+            // Controllo di non partire vicino a un path già messo
+            for (int i = 0; i < pathStartPlatforms.Count; i++)
+            {
+                if ((pathStartPlatforms[i].position - randomPlatformStart.position).magnitude < 9.5f)
+                {
+                    pathValid = false;
+                    break;
+                }
+            }
+            // Se mi attacco a una piattaforma grande, voglio evitare di farlo troppo vicino ad altri path già generati
+            // Quindi controllo il numero di vicini
+            /*
+            int neighCount = 0;
+            for (int i = 0; i < platformInfo.Count; i++)
+            {
+                float dist = (platformInfo[i].position - randomPlatformStart.position).magnitude;
+                if (dist < 1.2f * 3.7f) neighCount++;
+            }
+
+            // Deve avere esattamente tre vicini, compreso sé stesso, per non essere mai stato usato come partenza di un path
+            if (neighCount != 3) continue;
+            */
+
 
             while (pathValid)
             {
@@ -481,7 +524,7 @@ public class MapGenerator : MonoBehaviour
                     {
                         position = newPos,
                         isSlippery = false,
-                        scale = hexParams.platformScale * 0.7f
+                        scale = hexParams.platformScaleSmall
                     };
 
                     possiblePath.Add(newPlatform);
@@ -501,6 +544,8 @@ public class MapGenerator : MonoBehaviour
             {
                 platformInfo.AddRange(possiblePath);
                 pathsAdded++;
+
+                pathStartPlatforms.Add(possiblePath[0]);
             }
 
             if (pathsAdded >= pathsToGenerate) break;
@@ -542,8 +587,8 @@ public class MapGenerator : MonoBehaviour
             if (goalDeltaY < maxPathLength * upShift)
             {
                 length = Mathf.RoundToInt(goalDeltaY / (upShift));
-                if (goalDeltaX > 0) dir = -1;
-                else dir = 1;
+               // if (goalDeltaX > 0) dir = -1;
+               // else dir = 1;
                 lastPath = true;
             }
 
@@ -885,6 +930,7 @@ public struct HexGridParams
 {
     public Vector2 mapSize;
     public float platformScale;
+    public float platformScaleSmall;
     public float size;
     public int minPathLength;
     public int maxPathLength;

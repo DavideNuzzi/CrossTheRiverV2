@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 [CustomEditor(typeof(MapGenerator))]
 public class MapGeneratorEditor : Editor
@@ -113,6 +114,7 @@ public class MapGeneratorEditor : Editor
 
         mapGenerator.mapSizeHex = EditorGUILayout.Vector2Field("Map Size", mapGenerator.mapSizeHex);
         mapGenerator.platformScaleHex = EditorGUILayout.FloatField("Platform Scale", mapGenerator.platformScaleHex);
+        mapGenerator.platformScaleHexSmall = EditorGUILayout.FloatField("Platform small Scale", mapGenerator.platformScaleHexSmall);
         mapGenerator.hexSize = EditorGUILayout.FloatField("Hexagon size", mapGenerator.hexSize);
         mapGenerator.shuffleFactor = EditorGUILayout.FloatField("Shuffle factor", mapGenerator.shuffleFactor);
         mapGenerator.minPathLength = EditorGUILayout.IntField("Min path length", mapGenerator.minPathLength);
@@ -126,6 +128,7 @@ public class MapGeneratorEditor : Editor
         {
             mapSize = mapGenerator.mapSizeHex,
             platformScale = mapGenerator.platformScaleHex,
+            platformScaleSmall = mapGenerator.platformScaleHexSmall,
             size = mapGenerator.hexSize,
             minPathLength = mapGenerator.minPathLength,
             maxPathLength = mapGenerator.maxPathLength,
@@ -167,35 +170,133 @@ public class MapGeneratorEditor : Editor
 
         }
 
-        /*
         EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
-        EditorGUILayout.LabelField("Hexagonal Grid Random Size", titleStyle);
+        EditorGUILayout.LabelField("Massive map generation", titleStyle);
         EditorGUILayout.Space(15f);
 
-        mapGenerator.platformScaleHexSmall = EditorGUILayout.FloatField("Platform Scale Small", mapGenerator.platformScaleHexSmall);
-        mapGenerator.platformScaleHexLarge = EditorGUILayout.FloatField("Platform Scale Small", mapGenerator.platformScaleHexLarge);
+        mapGenerator.shortcutIsShorter = EditorGUILayout.Toggle("Shortcut is shorter path? ", mapGenerator.shortcutIsShorter);
+        mapGenerator.shortcutSameQuadrant = EditorGUILayout.Toggle("Shortcut same quadrant goal? ", mapGenerator.shortcutSameQuadrant);
+        mapGenerator.jumpDifference = EditorGUILayout.IntField("Jump difference", mapGenerator.jumpDifference);
+        mapGenerator.discountFactor = EditorGUILayout.FloatField("Discount factor", mapGenerator.discountFactor);
 
-
-        if (GUILayout.Button("Generate"))
+        if (GUILayout.Button("Generate good map"))
         {
-            HexGridParamsRegular hexParams = new HexGridParamsRegular()
-            {
-                mapSize = mapGenerator.mapSizeHex,
-                size = mapGenerator.hexSize,
-                platformScaleSmall = mapGenerator.platformScaleHexSmall,
-                platformScaleLarge = mapGenerator.platformScaleHexLarge,
-            };
+            GenerateGoodMap(mapGenerator, hexParams, mapGenerator.discountFactor);
 
-            List<PlatformInfo> info = mapGenerator.RegularHexRandomSize(hexParams);
-            mapGenerator.mapManager.platformInfo = info;
-            mapGenerator.mapManager.ResetMap();
-            mapGenerator.mapManager.CreateMap();
         }
 
-        */
+        if (GUILayout.Button("Calculate path vectors"))
+        {
+            mapGenerator.mapManager.GetPathVectors(mapGenerator.discountFactor);
+
+        }
+
+        if (GUILayout.Button("GENERATE ALL MAPS"))
+        {
+            for (int i = 0; i < 4; i++)
+            {
+                
+                if (i == 0 || i == 1) mapGenerator.shortcutIsShorter = true;
+                else mapGenerator.shortcutIsShorter = false;
+                if (i == 0 || i == 2) mapGenerator.shortcutSameQuadrant = true;
+                else mapGenerator.shortcutSameQuadrant = false;
+
+                for (int j = 0; j < 10; j++)
+                {
+                    GenerateGoodMap(mapGenerator, hexParams, mapGenerator.discountFactor);
+                    string name = "Istance_" + j + "_jumps_" + mapGenerator.shortcutIsShorter + "_quadrant_" + mapGenerator.shortcutSameQuadrant;
+                    mapGenerator.mapManager.SaveMap(name);
+                }
+                
+            }
+        }
+    }
+
+    void GenerateGoodMap(MapGenerator mapGenerator, HexGridParams hexParams, float discount)
+    {
+        int n = 0;
+        while (true)
+        { 
+      
+            // Genero una nuova mappa
+            List<PlatformInfo> info = mapGenerator.HexGridGenerationSimple(hexParams);
+            List<PlatformInfo> infoNew = mapGenerator.HexGridGenerationComplex(info, hexParams);
+            mapGenerator.mapManager.platformInfo = infoNew;
+            mapGenerator.mapManager.ResetMap();
+            mapGenerator.mapManager.CreateMap();
+            mapGenerator.mapManager.CalculatePaths();
+            mapGenerator.mapManager.GetPathVectors(discount);
+
+            
+
+            
+            int pathShorter = 0;
+
+            if (mapGenerator.mapManager.shortestPathShortcut.Count == mapGenerator.mapManager.shortestPathNoShortcut.Count - mapGenerator.jumpDifference) pathShorter = -1;
+            if (mapGenerator.mapManager.shortestPathNoShortcut.Count == mapGenerator.mapManager.shortestPathShortcut.Count - mapGenerator.jumpDifference) pathShorter = 1;
+
+            bool lengthGood = false;
+
+            if (mapGenerator.shortcutIsShorter) if (pathShorter == -1) lengthGood = true;
+            if (!mapGenerator.shortcutIsShorter) if (pathShorter == 1) lengthGood = true;
 
 
+            /*
 
+bool quadrantGood = false;
+
+if (mapGenerator.shortcutSameQuadrant) if (mapGenerator.mapManager.sameQuadrantNoShortcut == false && mapGenerator.mapManager.sameQuadrantShortcut == true) quadrantGood = true;
+if (!mapGenerator.shortcutSameQuadrant) if (mapGenerator.mapManager.sameQuadrantNoShortcut == true && mapGenerator.mapManager.sameQuadrantShortcut == false) quadrantGood = true;
+
+
+if (Mathf.Abs(mapGenerator.mapManager.goalVec.x) < 0.15f) quadrantGood = false;
+if (Mathf.Abs(mapGenerator.mapManager.pathVecNoShortcut.x) < 0.15f) quadrantGood = false;
+if (Mathf.Abs(mapGenerator.mapManager.pathVecShortcut.x) < 0.15f) quadrantGood = false;
+*/
+
+            //   bool quadrantGood = true;
+
+            bool goodAngle = false;
+            /*
+            if (mapGenerator.shortcutSameQuadrant)
+                if (mapGenerator.mapManager.angleShortcut < mapGenerator.angleSmallThreshold)
+                    if (mapGenerator.mapManager.angleNoShortcut > mapGenerator.angleLargeThreshold)
+                        goodAngle = true;
+
+            if (!mapGenerator.shortcutSameQuadrant)
+                if (mapGenerator.mapManager.angleNoShortcut < mapGenerator.angleSmallThreshold)
+                    if (mapGenerator.mapManager.angleShortcut > mapGenerator.angleLargeThreshold)
+                        goodAngle = true;
+
+            if (mapGenerator.mapManager.pathVecNoShortcut.magnitude < 0.5f || mapGenerator.mapManager.pathVecShortcut.magnitude < 0.5f) goodAngle = false;
+            */
+
+       
+            if (mapGenerator.mapManager.angleShortcut > mapGenerator.mapManager.angleNoShortcut - 50)
+               goodAngle = true;
+
+            goodAngle = true;
+
+            if (lengthGood && goodAngle)
+            {
+                Debug.Log("Lunghezza con shortcut = " + mapGenerator.mapManager.shortestPathShortcut.Count);
+                Debug.Log("Lunghezza senza shortcut = " + mapGenerator.mapManager.shortestPathNoShortcut.Count);
+
+                Debug.Log("No short: " + mapGenerator.mapManager.angleNoShortcut);
+                Debug.Log("Con short: " + mapGenerator.mapManager.angleShortcut);
+
+                break;
+            }
+
+            n++;
+            if (n > 3000)
+            {
+                Debug.LogError("ERRORE");
+                break;
+            }
+        }
+
+        
     }
 
 
