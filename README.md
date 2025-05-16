@@ -1,1 +1,1 @@
-Prova
+Unity build and assets for the "Cross the River" experiment used in the paper "Planning-while-acting: addressing the continuous dynamics of planning and action in a sequential embodied task" (https://www.biorxiv.org/content/10.1101/2024.11.28.625911v1)
